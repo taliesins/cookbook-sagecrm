@@ -18,6 +18,14 @@
 # limitations under the License.
 
 
+default['sagecrm']['name'] = 'sagecrm'
+default['sagecrm']['filename'] = 'SageCrm7.2a.1'
+default['sagecrm']['filenameextension'] = 'zip'
+default['sagecrm']['url'] = 'http://www.yourserver.com/' + default['sagecrm']['filename'] + '.' + default['sagecrm']['filenameextension'] 
+default['sagecrm']['checksum'] = '818241f5fb614371958e19cbedd85ab286a69e31fed1f7cde544885952d22d2d'
+default['sagecrm']['home'] = "#{Chef::Config['file_cache_path']}/#{node['sagecrm']['filename']}/#{node['sagecrm']['checksum']}"
+
+
 default['sagecrm']['service']['account'] = '.\SageCRM' # e.g. SageCRM. This account is used to access the database server, so ensure that database permission have been configured. This account is used to run service, so ensure that it has the correct permissions on each node. If using multiple nodes, active directory is required.
 default['sagecrm']['service']['password'] = 'P@ssw0rd' # e.g. P@ssw0rd. This is the password to use if creating a windows account locally to use.
 default['sagecrm']['service']['group'] = 'Administrators'
@@ -70,3 +78,5 @@ default['sagecrm']['certificate']['FarmCertificate']['store_name'] = "MY"
 default['sagecrm']['certificate']['FarmCertificate']['user_store'] = false
 default['sagecrm']['certificate']['FarmCertificate']['ca_cert_path'] = node['sagecrm']['certificate']['CaCertificate']['cert_path']
 default['sagecrm']['certificate']['FarmCertificate']['ca_key_path'] = node['sagecrm']['certificate']['CaCertificate']['key_path']
+
+default['sagecrm']['windows_features'] = ['IIS-WebServerRole', 'IIS-WebServer', 'IIS-CommonHttpFeatures', 'IIS-HttpErrors', 'IIS-ApplicationDevelopment', 'IIS-RequestFiltering', 'IIS-NetFxExtensibility', 'IIS-HealthAndDiagnostics', 'IIS-HttpLogging', 'IIS-Security', 'IIS-RequestMonitor', 'IIS-Performance', 'NetFx3', 'NetFx3ServerFeatures', 'IIS-StaticContent', 'IIS-DefaultDocument', 'IIS-WebSockets', 'IIS-WebServerManagementTools', 'IIS-ManagementConsole', 'IIS-ManagementService', 'IIS-IIS6ManagementCompatibility','IIS-Metabase', 'IIS-ISAPIExtensions', 'IIS-ISAPIFilter', 'IIS-StaticContent', 'IIS-DefaultDocument', 'IIS-DirectoryBrowsing', 'IIS-ASPNET', 'IIS-ASP', 'IIS-CGI', 'IIS-ServerSideIncludes', 'IIS-BasicAuthentication', 'IIS-HttpCompressionStatic', 'IIS-ManagementConsole', 'IIS-WMICompatibility', 'IIS-LegacyScripts', 'IIS-LegacySnapIn', 'NetFx3', 'SNMP',  'Printing-XPSServices-Features', 'IIS-WindowsAuthentication']
