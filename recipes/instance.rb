@@ -34,12 +34,12 @@ if domain == ""  || domain == "."
 	domain = node["hostname"]
 end
 
-(default['sagecrm']['windows_features']).each do |feature|
-	windows_feature feature do
-	  action :install
-	  all true
-	end
-end
+#(default['sagecrm']['windows_features']).each do |feature|
+#	windows_feature feature do
+#	  action :install
+#	  all true
+#	end
+#end
 
 ::Chef::Recipe.send(:include, Windows::Helper)
 filename = File.basename(node['sagecrm']['url']).downcase
