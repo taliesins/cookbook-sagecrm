@@ -22,7 +22,7 @@ default['sagecrm']['name'] = 'sagecrm'
 default['sagecrm']['filename'] = 'SageCrm7.2a.1'
 default['sagecrm']['filenameextension'] = 'zip'
 default['sagecrm']['url'] = 'http://www.yourserver.com/' + default['sagecrm']['filename'] + '.' + default['sagecrm']['filenameextension'] 
-default['sagecrm']['checksum'] = '818241f5fb614371958e19cbedd85ab286a69e31fed1f7cde544885952d22d2d'
+default['sagecrm']['checksum'] = '677b2d0d6dabbd8a0bb5977d50532379166f2f03b8da28853257786a4e41669c'
 default['sagecrm']['home'] = "#{Chef::Config['file_cache_path']}/#{node['sagecrm']['filename']}/#{node['sagecrm']['checksum']}"
 
 
