@@ -47,7 +47,7 @@ fileextension = File.extname(filename)
 download_path = "#{Chef::Config['file_cache_path']}/#{filename}"
 extract_path = "#{Chef::Config['file_cache_path']}/#{node['sagecrm']['filename']}/#{node['sagecrm']['checksum']}"
 winfriendly_extract_path = win_friendly_path(extract_path)
-config_file_path = "#{extract_path}/Sage/setup.iss"
+config_file_path = "#{extract_path}/setup.iss"
 
 remote_file download_path do
   source node['sagecrm']['url']
@@ -56,7 +56,7 @@ end
 
 execute 'Extract Sage CRM installation' do
   command "#{File.join(node['7-zip']['home'], '7z.exe')} x -y -o\"#{winfriendly_extract_path}\" #{download_path}"
-  only_if {!(::File.directory?(download_path)) }
+  not_if { ::File.directory?(extract_path) }
 end
 
 template config_file_path do
@@ -66,5 +66,5 @@ end
 #windows_package node['sagecrm']['name'] do
 #  source "#{extract_path}/setup.exe"
 #  installer_type :custom
-#  options '/s'
+#  options '/s /L0x0409 SageCRMstd'
 #end
