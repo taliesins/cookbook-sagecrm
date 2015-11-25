@@ -7,6 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
+include_recipe 'autoit'
 include_recipe '7-zip'
 
 if node['sagecrm']['service']['account'] == ""
@@ -58,29 +59,56 @@ end
 end
 
 ::Chef::Recipe.send(:include, Windows::Helper)
+
+working_directory = File.join(Chef::Config['file_cache_path'], '/sagecrm')
+
+directory working_directory do
+  recursive true
+end
+
+sagecrm_install_script_path = File.join(working_directory, 'SageCrmInstall.au3')
+sagecrm_install_exe_path = File.join(working_directory, 'SageCrmInstall.exe')
+
+win_friendly_sagecrm_install_script_path = win_friendly_path(sagecrm_install_script_path)
+win_friendly_sagecrm_install_exe_path = win_friendly_path(sagecrm_install_exe_path)
+
+sagecrm_installed = is_package_installed?("#{node['sagecrm']['name']}")
 filename = File.basename(node['sagecrm']['url']).downcase
-fileextension = File.extname(filename)
-download_path = "#{Chef::Config['file_cache_path']}/#{filename}"
-extract_path = "#{Chef::Config['file_cache_path']}/#{node['sagecrm']['filename']}/#{node['sagecrm']['checksum']}"
-winfriendly_extract_path = win_friendly_path(extract_path)
-config_file_path = "#{extract_path}/setup.iss"
+download_path = File.join(working_directory, filename)
+
+installation_directory = File.join(working_directory, node['sagecrm']['checksum'])
+win_friendly_installation_directory = win_friendly_path(installation_directory)
+
+template sagecrm_install_script_path do
+  source 'SageCrmInstall.au3.erb'
+  variables(
+    WorkingDirectory: win_friendly_installation_directory
+  )
+  not_if {sagecrm_installed}
+end
+
+execute "Check syntax #{win_friendly_sagecrm_install_script_path} with AutoIt" do
+  command "\"#{File.join(node['autoit']['home'], '/Au3Check.exe')}\" \"#{win_friendly_sagecrm_install_script_path}\""
+  not_if {sagecrm_installed}
+end
+
+execute "Compile #{win_friendly_sagecrm_install_script_path} with AutoIt" do
+  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\""
+  not_if {sagecrm_installed}
+end
 
 remote_file download_path do
   source node['sagecrm']['url']
   checksum node['sagecrm']['checksum']
+  not_if {sagecrm_installed}
 end
 
-execute 'Extract Sage CRM installation' do
-  command "#{File.join(node['7-zip']['home'], '7z.exe')} x -y -o\"#{winfriendly_extract_path}\" #{download_path}"
-  not_if { ::File.directory?(extract_path) }
+execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
+  command "\"#{File.join(node['7-zip']['home'], '7z.exe')}\" x -y -o\"#{win_friendly_installation_directory}\" #{download_path}"
+  not_if {itracs_update_installed}
 end
 
-template config_file_path do
-  source 'setup.iss.erb'
-end
-
-windows_package node['sagecrm']['name'] do
-  source "#{extract_path}/setup.exe"
-  installer_type :custom
-  options '/s /L0x0409 SageCRMstd'
-end
+#execute "Install #{win_friendly_sagecrm_install_exe_path}" do
+#  command "\"#{File.join(node['pstools']['home'], 'psexec.exe')}\" -accepteula -i -s \"#{win_friendly_sagecrm_install_exe_path}\""
+#  not_if {sagecrm_installed}
+#end

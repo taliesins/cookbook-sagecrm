@@ -1,0 +1,41 @@
+$WindowName = "Sage CRM setup"
+$LicenseName = "<%= node['sagecrm']['properties']['License']['Name']  %>"
+$LicenseCompany = "<%= node['sagecrm']['properties']['License']['Company'] %>"
+$LicenseSerial = "<%= node['sagecrm']['properties']['License'] %>"
+
+$DatabaseName = "<%= node['sagecrm']['database']['database_name'] %>"
+$DatabaseInitialSize = "<%= node['sagecrm']['database']['initial_size'] %>"
+$DatabaseUsername = "<%= node['sagecrm']['properties']['User'] %>"
+$DatabasePassword = "<%= node['sagecrm']['properties']['Password'] %>"
+$DatabaseServerHost = "<%= node['sagecrm']['database']['host'] %>"
+$DatabaseServerPort = "<%= node['sagecrm']['database']['port'] %>"
+
+$InstallDirectory = "<%= node['sagecrm']['instance']['install_dir'] %>"
+$Currency = "<%= node['sagecrm']['properties']['Currency'] %>"
+$CurrencyFolder = "<%= node['sagecrm']['properties']['CurrencyFolder'] %>"
+$Country = "<%= node['sagecrm']['properties']['Country'] %>"
+$AreaCode = "<%= node['sagecrm']['properties']['AreaCode'] %>"
+$OutNumber = "<%= node['sagecrm']['properties']['OutNumber'] %>"
+$DialCode = "<%= node['sagecrm']['properties']['Dialcode'] %>"
+
+$ProxyServer = "<%= node['sagecrm']['properties']['ProxyServer'] %>"
+$ProxyUser = "<%= node['sagecrm']['properties']['ProxyUser'] %>"
+$ProxyPassword = "<%= node['sagecrm']['properties']['ProxyPassword'] %>"
+$ProxyDomain = "<%= node['sagecrm']['properties']['ProxyDomain'] %>"
+$ProxyPort = "<%= node['sagecrm']['properties']['ProxyPort'] %>"
+$UseHttps = <%= node['sagecrm']['properties']['UseHttps'] ? 'True' : 'False' %>
+$UseProxy = <%= node['sagecrm']['properties']['UseProxy'] ? 'True' : 'False' %>
+
+$Company = "<%= node['sagecrm']['properties']['Registration']['Company'] %>"
+$CompanyContact = "<%= node['sagecrm']['properties']['Registration']['CompanyContact'] %>"
+$CompanyEmail = "<%= node['sagecrm']['properties']['Registration']['CompanyEmail'] %>"
+$CompanyPhone = "<%= node['sagecrm']['properties']['Registration']['CompanyPhone'] %>"
+
+$BPName = "<%= node['sagecrm']['properties']['Registration']['BPName'] %>"
+$BPContact = "<%= node['sagecrm']['properties']['Registration']['BPContact'] %>"
+$BPEmail = "<%= node['sagecrm']['properties']['Registration']['BPEmail'] %>"
+$BPPhone = "<%= node['sagecrm']['properties']['Registration']['BPPhone'] %>"
+
+$WorkingDirectory = "<%= @WorkingDirectory %>"
+
+Run("setup.exe /s /L0x0409 SageCRMstd", $WorkingDirectory)
