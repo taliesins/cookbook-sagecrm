@@ -1,0 +1,100 @@
+[InstallShield Silent]
+Version=v7.00
+File=Response File
+[File Transfer]
+OverwrittenReadOnly=NoToAll
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-DlgOrder]
+Dlg0={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdWelcome-0
+Count=17
+Dlg1={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdLicense2Rtf-0
+Dlg2={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdShowDlgEdit3-0
+Dlg3={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-DBType-0
+Dlg4={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskText-0
+Dlg5={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdAskDestPath-0
+Dlg6={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SQLLogin-0
+Dlg7={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskOptions-0
+Dlg8={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskOptions-1
+Dlg9={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-currency-0
+Dlg10={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-CTI-0
+Dlg11={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-InternetOptions-0
+Dlg12={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdStartCopy-0
+Dlg13={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskYesNo-0
+Dlg14={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-MessageBox-0
+Dlg15={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-DetailsForRegister-0
+Dlg16={241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdFinish-0
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdWelcome-0]
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdLicense2Rtf-0]
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdShowDlgEdit3-0]
+szEdit1=<%= node['sagecrm']['properties']['License']['Name']  %>
+szEdit2=<%= node['sagecrm']['properties']['License']['Company'] %>
+szEdit3=<%= node['sagecrm']['properties']['License'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-DBType-0]
+optSelected=1
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskText-0]
+szText=<%= node['sagecrm']['database']['database_name'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdAskDestPath-0]
+szDir=<%= node['sagecrm']['instance']['install_dir'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SQLLogin-0]
+szUser=<%= node['sagecrm']['properties']['User'] %>
+szPass=<%= node['sagecrm']['properties']['EncyptedPassword'] %>
+szServer=<%= node['sagecrm']['database']['host'] %>
+szPort=<%= node['sagecrm']['database']['port'] %>
+szDBInitSize=<%= node['sagecrm']['database']['initial_size'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskOptions-0]
+Result=1
+Sel-0=0
+Sel-1=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskOptions-1]
+Result=1
+Sel-0=0
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-currency-0]
+Currency=<%= node['sagecrm']['properties']['Currency'] %>
+CurrencyFolder=<%= node['sagecrm']['properties']['CurrencyFolder'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-CTI-0]
+svCountry=<%= node['sagecrm']['properties']['Country'] %>
+svAreaCode=<%= node['sagecrm']['properties']['AreaCode'] %>
+svOutNumber=<%= node['sagecrm']['properties']['OutNumber'] %>
+svDialcode=<%= node['sagecrm']['properties']['Dialcode'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-InternetOptions-0]
+svProxyServer='<%= node['sagecrm']['properties']['ProxyServer'].to_s == '' ? ' ' : node['sagecrm']['properties']['ProxyServer'] %>'
+svProxyUser='<%= node['sagecrm']['properties']['ProxyUser'].to_s == '' ? ' ' : node['sagecrm']['properties']['ProxyUser'] %>'
+svProxyPassword='<%= node['sagecrm']['properties']['ProxyPassword'].to_s == '' ? ' ' : node['sagecrm']['properties']['ProxyPassword'] %>'
+svProxyDomain='<%= node['sagecrm']['properties']['ProxyDomain'].to_s == '' ? ' ' : node['sagecrm']['properties']['ProxyDomain'] %>'
+svProxyPort='<%= node['sagecrm']['properties']['ProxyPort'].to_s == '' ? ' ' : node['sagecrm']['properties']['ProxyPort'] %>'
+svUseHttps=<%= node['sagecrm']['properties']['UseHttps'] ? '1' : '0' %>
+svUseProxy=<%= node['sagecrm']['properties']['UseProxy'] ? '1' : '0' %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdStartCopy-0]
+Result=1
+[Application]
+Name=Sage CRM
+Version=7.2
+Company=Sage
+Lang=0009
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-AskYesNo-0]
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-MessageBox-0]
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-DetailsForRegister-0]
+svCompany=<%= node['sagecrm']['properties']['Registration']['Company'] %>
+svCompanyContact=<%= node['sagecrm']['properties']['Registration']['CompanyContact'] %>
+svCompanyEmail=<%= node['sagecrm']['properties']['Registration']['CompanyEmail'] %>
+svCompanyPhone=<%= node['sagecrm']['properties']['Registration']['CompanyPhone'] %>
+svBPName=<%= node['sagecrm']['properties']['Registration']['BPName'] %>
+svBPContact=<%= node['sagecrm']['properties']['Registration']['BPContact'] %>
+svBPEmail=<%= node['sagecrm']['properties']['Registration']['BPEmail'] %>
+svBPPhone=<%= node['sagecrm']['properties']['Registration']['BPPhone'] %>
+Result=1
+[{241A0703-46F1-4D04-AA6E-28E9C325B5FE}-SdFinish-0]
+Result=1
+bOpt1=0
+bOpt2=0

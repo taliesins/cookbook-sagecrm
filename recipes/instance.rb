@@ -10,11 +10,27 @@
 include_recipe '7-zip'
 
 if node['sagecrm']['service']['account'] == ""
-    raise "Please configure Sage CRM service_account attribute is configured"
+    raise "Please configure Sage CRM service_account attribute"
 end
 
 if node['sagecrm']['service']['password'] == ""
-    raise "Please configure Sage CRM service_account_password attribute is configured"
+    raise "Please configure Sage CRM service_account_password attribute"
+end
+
+if node['sagecrm']['service']['password'] == ""
+    raise "Please configure Sage CRM service_account_password attribute"
+end
+
+if node['sagecrm']['properties']['License']['Name']  == ""
+    raise "Please configure Sage CRM license name attribute"
+end
+
+if node['sagecrm']['properties']['License']['Company'] == ""
+    raise "Please configure Sage CRM license company attribute"
+end
+
+if node['sagecrm']['properties']['License']['Serial'] == ""
+    raise "Please configure Sage CRM license serial attribute"
 end
 
 username = node['sagecrm']['service']['account']
@@ -34,12 +50,12 @@ if domain == ""  || domain == "."
 	domain = node["hostname"]
 end
 
-#(default['sagecrm']['windows_features']).each do |feature|
-#	windows_feature feature do
-#	  action :install
-#	  all true
-#	end
-#end
+(default['sagecrm']['windows_features']).each do |feature|
+	windows_feature feature do
+	  action :install
+	  all true
+	end
+end
 
 ::Chef::Recipe.send(:include, Windows::Helper)
 filename = File.basename(node['sagecrm']['url']).downcase
@@ -63,8 +79,8 @@ template config_file_path do
   source 'setup.iss.erb'
 end
 
-#windows_package node['sagecrm']['name'] do
-#  source "#{extract_path}/setup.exe"
-#  installer_type :custom
-#  options '/s /L0x0409 SageCRMstd'
-#end
+windows_package node['sagecrm']['name'] do
+  source "#{extract_path}/setup.exe"
+  installer_type :custom
+  options '/s /L0x0409 SageCRMstd'
+end

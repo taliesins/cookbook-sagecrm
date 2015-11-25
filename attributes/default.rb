@@ -52,12 +52,15 @@ default['sagecrm']['database']['host'] = '127.0.0.1'
 default['sagecrm']['database']['port'] = node['sql_server']['port']
 default['sagecrm']['database']['username'] = nil
 default['sagecrm']['database']['password'] = nil
+default['sagecrm']['database']['initial_size'] = 512
+default['sagecrm']['database']['database_name'] = 'CRM'
 
 default['sagecrm']['database']['windows_user'] = true
 default['sagecrm']['database']['account'] = "#{domain}\\#{username}"
 
 default['sagecrm']['instance']['FarmDns'] = node['fqdn']  # e.g. servicebus.localtest.me
 default['sagecrm']['instance']['FarmCertificateThumbprint'] = '' # if sagecrm::certificate is called it will populate this field e.g. wildcard certificate *.localtest.me thumbprint 
+default['sagecrm']['instance']['install_dir'] = 'C:\\Program Files (x86)\\Sage\\CRM\\'
 
 default['sagecrm']['certificate']['CaCertificate']['common_name'] = node['sagecrm']['instance']['FarmDns'] + '.ca'
 default['sagecrm']['certificate']['CaCertificate']['key_source'] = 'self-signed'
@@ -79,4 +82,37 @@ default['sagecrm']['certificate']['FarmCertificate']['user_store'] = false
 default['sagecrm']['certificate']['FarmCertificate']['ca_cert_path'] = node['sagecrm']['certificate']['CaCertificate']['cert_path']
 default['sagecrm']['certificate']['FarmCertificate']['ca_key_path'] = node['sagecrm']['certificate']['CaCertificate']['key_path']
 
-default['sagecrm']['windows_features'] = ['IIS-WebServerRole', 'IIS-WebServer', 'IIS-CommonHttpFeatures', 'IIS-HttpErrors', 'IIS-ApplicationDevelopment', 'IIS-RequestFiltering', 'IIS-NetFxExtensibility', 'IIS-HealthAndDiagnostics', 'IIS-HttpLogging', 'IIS-Security', 'IIS-RequestMonitor', 'IIS-Performance', 'NetFx3', 'NetFx3ServerFeatures', 'IIS-StaticContent', 'IIS-DefaultDocument', 'IIS-WebSockets', 'IIS-WebServerManagementTools', 'IIS-ManagementConsole', 'IIS-ManagementService', 'IIS-IIS6ManagementCompatibility','IIS-Metabase', 'IIS-ISAPIExtensions', 'IIS-ISAPIFilter', 'IIS-StaticContent', 'IIS-DefaultDocument', 'IIS-DirectoryBrowsing', 'IIS-ASPNET', 'IIS-ASP', 'IIS-CGI', 'IIS-ServerSideIncludes', 'IIS-BasicAuthentication', 'IIS-HttpCompressionStatic', 'IIS-ManagementConsole', 'IIS-WMICompatibility', 'IIS-LegacyScripts', 'IIS-LegacySnapIn', 'NetFx3', 'SNMP',  'Printing-XPSServices-Features', 'IIS-WindowsAuthentication']
+default['sagecrm']['windows_features'] = ['IIS-WebServerRole', 'IIS-WebServer', 'IIS-CommonHttpFeatures', 'IIS-HttpErrors', 'IIS-ApplicationDevelopment', 'IIS-RequestFiltering', 'IIS-NetFxExtensibility', 'IIS-HealthAndDiagnostics', 'IIS-HttpLogging', 'IIS-Security', 'IIS-RequestMonitor', 'IIS-Performance', 'NetFx3', 'NetFx3ServerFeatures', 'IIS-StaticContent', 'IIS-DefaultDocument', 'IIS-WebSockets', 'IIS-WebServerManagementTools', 'IIS-ManagementConsole', 'IIS-ManagementService', 'IIS-IIS6ManagementCompatibility','IIS-Metabase', 'IIS-ISAPIExtensions', 'IIS-ISAPIFilter', 'IIS-StaticContent', 'IIS-DefaultDocument', 'IIS-DirectoryBrowsing', 'IIS-ASPNET', 'IIS-ASP', 'IIS-CGI', 'IIS-ServerSideIncludes', 'IIS-BasicAuthentication', 'IIS-HttpCompressionStatic', 'IIS-ManagementConsole', 'IIS-WMICompatibility', 'IIS-LegacyScripts', 'IIS-LegacySnapIn', 'SNMP','Printing-XPSServices-Features', 'IIS-WindowsAuthentication']
+
+#The sql login credentials for the account to manage and run Sage Crm
+default['sagecrm']['properties']['User'] = username
+default['sagecrm']['properties']['EncyptedPassword'] = '&PJMCIGFNFLIGPMLMJJKJAGJOCMLLKCEC' # Password = "P@ssw0rd" Run installer with setup.exe /r /L0x0409 SageCRMstd and retrieve encrypted password from c:\windows\setup.iss
+
+default['sagecrm']['properties']['License']['Name'] = ''
+default['sagecrm']['properties']['License']['Company'] = ''
+default['sagecrm']['properties']['License']['Serial'] = ''
+default['sagecrm']['properties']['Currency'] = 'Euro'
+default['sagecrm']['properties']['CurrencyFolder'] = 'EUR'
+
+default['sagecrm']['properties']['Country'] = 'United Kingdom'
+default['sagecrm']['properties']['AreaCode'] = '+44'
+default['sagecrm']['properties']['OutNumber'] = '00'
+default['sagecrm']['properties']['Dialcode'] = '44'
+
+default['sagecrm']['properties']['ProxyServer'] = ''
+default['sagecrm']['properties']['ProxyUser'] = ''
+default['sagecrm']['properties']['ProxyPassword'] = ''
+default['sagecrm']['properties']['ProxyDomain'] = ''
+default['sagecrm']['properties']['ProxyPort'] = ''
+
+default['sagecrm']['properties']['UseHttps'] = false
+default['sagecrm']['properties']['UseProxy'] = false
+
+default['sagecrm']['properties']['Registration']['Company'] = node['sagecrm']['properties']['License']['Company']
+default['sagecrm']['properties']['Registration']['CompanyContact'] = 'Contact Name'
+default['sagecrm']['properties']['Registration']['CompanyEmail'] = 'ContactName@CompanyName.com'
+default['sagecrm']['properties']['Registration']['CompanyPhone'] = '+44000000'
+default['sagecrm']['properties']['Registration']['BPName'] = 'BP Company Name'
+default['sagecrm']['properties']['Registration']['BPContact'] = 'BP Contact Name'
+default['sagecrm']['properties']['Registration']['BPEmail'] = 'BPContactName@BPCompanyName.com'
+default['sagecrm']['properties']['Registration']['BPPhone'] = '+44111111'
