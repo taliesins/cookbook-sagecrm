@@ -50,7 +50,7 @@ if domain == ""  || domain == "."
 	domain = node["hostname"]
 end
 
-(default['sagecrm']['windows_features']).each do |feature|
+(node['sagecrm']['windows_features']).each do |feature|
 	windows_feature feature do
 	  action :install
 	  all true
