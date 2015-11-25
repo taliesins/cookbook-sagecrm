@@ -54,8 +54,6 @@ default['sagecrm']['database']['username'] = nil
 default['sagecrm']['database']['password'] = nil
 default['sagecrm']['database']['initial_size'] = 512
 default['sagecrm']['database']['database_name'] = 'CRM'
-
-default['sagecrm']['database']['windows_user'] = true
 default['sagecrm']['database']['account'] = "#{domain}\\#{username}"
 
 default['sagecrm']['instance']['FarmDns'] = node['fqdn']  # e.g. servicebus.localtest.me
@@ -86,18 +84,16 @@ default['sagecrm']['windows_features'] = ['IIS-WebServerRole', 'IIS-WebServer', 
 
 #The sql login credentials for the account to manage and run Sage Crm
 default['sagecrm']['properties']['User'] = username
-default['sagecrm']['properties']['EncyptedPassword'] = '&PJMCIGFNFLIGPMLMJJKJAGJOCMLLKCEC' # Password = "P@ssw0rd" Run installer with setup.exe /r /L0x0409 SageCRMstd and retrieve encrypted password from c:\windows\setup.iss
+default['sagecrm']['properties']['Password'] = node['sagecrm']['service']['password']
 
 default['sagecrm']['properties']['License']['Name'] = ''
 default['sagecrm']['properties']['License']['Company'] = ''
 default['sagecrm']['properties']['License']['Serial'] = ''
 default['sagecrm']['properties']['Currency'] = 'Euro'
-default['sagecrm']['properties']['CurrencyFolder'] = 'EUR'
 
 default['sagecrm']['properties']['Country'] = 'United Kingdom'
 default['sagecrm']['properties']['AreaCode'] = '+44'
 default['sagecrm']['properties']['OutNumber'] = '00'
-default['sagecrm']['properties']['Dialcode'] = '44'
 
 default['sagecrm']['properties']['ProxyServer'] = ''
 default['sagecrm']['properties']['ProxyUser'] = ''
@@ -108,7 +104,6 @@ default['sagecrm']['properties']['ProxyPort'] = ''
 default['sagecrm']['properties']['UseHttps'] = false
 default['sagecrm']['properties']['UseProxy'] = false
 
-default['sagecrm']['properties']['Registration']['Company'] = node['sagecrm']['properties']['License']['Company']
 default['sagecrm']['properties']['Registration']['CompanyContact'] = 'Contact Name'
 default['sagecrm']['properties']['Registration']['CompanyEmail'] = 'ContactName@CompanyName.com'
 default['sagecrm']['properties']['Registration']['CompanyPhone'] = '+44000000'

@@ -21,6 +21,14 @@ sql_server_connection_info = {
 sql_server_database_user node['sagecrm']['database']['account'] do
   connection sql_server_connection_info
   sql_sys_roles node['sagecrm']['database']['sys_roles']
-  windows_user node['sagecrm']['database']['windows_user']
+  windows_user true
+  action :create
+end
+
+sql_server_database_user node['sagecrm']['properties']['User'] do
+  connection sql_server_connection_info
+  sql_sys_roles node['sagecrm']['database']['sys_roles']
+  windows_user false
+  password node['sagecrm']['properties']['Password']
   action :create
 end
