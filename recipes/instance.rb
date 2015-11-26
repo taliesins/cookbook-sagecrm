@@ -105,7 +105,7 @@ end
 
 execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
   command "\"#{File.join(node['7-zip']['home'], '7z.exe')}\" x -y -o\"#{win_friendly_installation_directory}\" #{download_path}"
-  not_if {itracs_update_installed}
+  not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
 #execute "Install #{win_friendly_sagecrm_install_exe_path}" do
