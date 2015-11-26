@@ -49,24 +49,24 @@ Func WaitForControl($windowName, $controlId, $pollDuration)
    $Waiting = True
    $counter = 1
    While ($Waiting)
-	  If WinExists($windowName) Then
-		 $hCtrl = ControlGetHandle($windowName, "", $controlId)
-		 If $hCtrl Then
-			ConsoleWrite("Succeeded waiting for control...")
-			Return True
-		 Else
+     If WinExists($windowName) Then
+       $hCtrl = ControlGetHandle($windowName, "", $controlId)
+       If $hCtrl Then
+         ConsoleWrite("Succeeded waiting for control...")
+         Return True
+       Else
          $counter = $counter + 1
          If $counter > 60 Then
             ConsoleWrite("Failed while waiting for control...")
-			Return False
+         Return False
          EndIf
-			ConsoleWrite("Sleep for now...")
-			Sleep($pollDuration)
-		 EndIf
-	  Else
-		 ConsoleWrite("Failed while waiting for control...")
-		 Return False
-	  EndIf
+         ConsoleWrite("Sleep for now...")
+         Sleep($pollDuration)
+       EndIf
+     Else
+       ConsoleWrite("Failed while waiting for control...")
+       Return False
+     EndIf
    WEnd
    ConsoleWrite("Failed while waiting for control...")
    Return False
@@ -133,7 +133,7 @@ Func RunInstall($windowName)
    sleep(250)
    $errorControl = WaitForControl("Sage CRM 7.2.a.1", 65535, 10)
    If $errorControl == True Then
-	  Return False
+     Return False
    EndIf
 
    WinWaitActive($windowName)
@@ -167,24 +167,24 @@ Func RunInstall($windowName)
 
    WinWaitActive($windowName)
    if $UseHttps == True Then
-	  ControlCommand($windowName, "", 1203, "Check", "")
+     ControlCommand($windowName, "", 1203, "Check", "")
    Else
-	  ControlCommand($windowName, "", 1203, "UnCheck", "")
+     ControlCommand($windowName, "", 1203, "UnCheck", "")
    EndIf
 
    WinWaitActive($windowName)
    if $UseProxy == True Then
-	  ControlCommand($windowName, "", 1202, "Check", "")
+     ControlCommand($windowName, "", 1202, "Check", "")
 
-	  WinWaitActive($windowName)
-	  ControlSetText($windowName, "", 1001, $ProxyServer )
-	  ControlSetText($windowName, "", 1003, $ProxyServer )
-	  ControlSetText($windowName, "", 1005, $ProxyDomain )
-	  ControlSetText($windowName, "", 1007, $ProxyUser )
-	  ControlSetText($windowName, "", 1009, $ProxyPassword )
+     WinWaitActive($windowName)
+     ControlSetText($windowName, "", 1001, $ProxyServer )
+     ControlSetText($windowName, "", 1003, $ProxyServer )
+     ControlSetText($windowName, "", 1005, $ProxyDomain )
+     ControlSetText($windowName, "", 1007, $ProxyUser )
+     ControlSetText($windowName, "", 1009, $ProxyPassword )
 
    Else
-	  ControlCommand($windowName, "", 1202, "UnCheck", "")
+     ControlCommand($windowName, "", 1202, "UnCheck", "")
    EndIf
 
    WinWaitActive($windowName)
@@ -195,35 +195,45 @@ Func RunInstall($windowName)
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
-   WinWaitActive($windowName)
+   $waiting = True
+   $counter = 1
+   $errorDialogWindows = "Sage CRM 7.2.a.1"
+   While ($waiting)
+     If WinExists($errorDialogWindows) Then
+       $unableToConnectToDatabase = ControlGetHandle($errorDialogWindows, "", 6)
+       $shouldStopIIS = ControlGetHandle($errorDialogWindows, "", 6)
+       If $shouldStopIIS Then
+         WinActive($errorDialogWindows)
+         WinWaitActive($errorDialogWindows)
 
-   ;We checking if there is an error connecting to the database server
-   $stopIISControl = WaitForControl("Sage CRM 7.2.a.1", 6, 10)
-   If $stopIISControl == True Then
-	  WinActive("Sage CRM 7.2.a.1")
-	  WinWaitActive("Sage CRM 7.2.a.1")
+         ConsoleWrite("Click Yes")
+         ControlClick($errorDialogWindows, "", 6)
+       EndIf
 
-	  ConsoleWrite("Click Yes")
-	  ControlClick("Sage CRM 7.2.a.1", "", 6)
+       $urlRewriterHeadache = ControlGetHandle($errorDialogWindows, "", 2)
+       if $urlRewriterHeadache Then
+         WinActive($errorDialogWindows)
+         WinWaitActive($errorDialogWindows)
 
-	  WinActive($windowName)
-	  WinWaitActive($windowName)
-   EndIf
+         ConsoleWrite("Click Yes")
+         ControlClick($errorDialogWindows, "", 2)
+       EndIf
 
-   ;We checking if there is an error connecting to the database server
-   $stopIISControl = WaitForControl("Sage CRM 7.2.a.1", 2, 7500)
-   If $stopIISControl == True Then
-	  WinActive("Sage CRM 7.2.a.1")
-	  WinWaitActive("Sage CRM 7.2.a.1")
+       $installationCompleted = ControlGetHandle($windowName, "", 1312)
+       If $installationCompleted Then
+         $waiting = False
+       EndIf
+     EndIf
 
-	  ConsoleWrite("Click Yes")
-	  ControlClick("Sage CRM 7.2.a.1", "", 2)
+     $counter = $counter + 1
+     If $counter > 1200 Then
+       $waiting = False
+     EndIf
+     Sleep(500)
+   WEnd
 
-	  WinActive($windowName)
-	  WinWaitActive($windowName)
-   EndIf
+   WinActive($windowName)
 
-   WinWaitActive($windowName,"",900)
    ControlSetText($windowName, "", 1312, $CompanyContact )
    ControlSetText($windowName, "", 1314, $CompanyEmail )
    ControlSetText($windowName, "", 1318, $CompanyPhone )
@@ -232,14 +242,17 @@ Func RunInstall($windowName)
    ControlSetText($windowName, "", 1323, $BPContact )
    ControlSetText($windowName, "", 1325, $BPEmail )
    ControlSetText($windowName, "", 1329, $BPPhone )
-   
+
    ConsoleWrite("Click next")
-   ControlClick($windowName, "Next", 1)
+   ControlClick($windowName, "", 1)
 
    WinWaitActive($windowName)
-   
+
    ControlCommand($windowName, "", 501, "UnCheck", "")
    ControlCommand($windowName, "", 502, "UnCheck", "")
+
+   ConsoleWrite("Click next")
+   ControlClick($windowName, "", 1)
 
    Return True
 EndFunc

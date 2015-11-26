@@ -18,7 +18,7 @@
 # limitations under the License.
 
 
-default['sagecrm']['name'] = 'sagecrm'
+default['sagecrm']['name'] = 'Sage CRM'
 default['sagecrm']['filename'] = 'SageCrm7.2a.1'
 default['sagecrm']['filenameextension'] = 'zip'
 default['sagecrm']['url'] = 'http://www.yourserver.com/' + default['sagecrm']['filename'] + '.' + default['sagecrm']['filenameextension'] 
