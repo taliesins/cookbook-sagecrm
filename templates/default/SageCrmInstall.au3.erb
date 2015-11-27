@@ -198,6 +198,7 @@ Func RunInstall($windowName)
    $waiting = True
    $counter = 1
    $errorDialogWindows = "Sage CRM 7.2.a.1"
+
    While ($waiting)
      If WinExists($errorDialogWindows) Then
        $unableToConnectToDatabase = ControlGetHandle($errorDialogWindows, "", 6)
@@ -218,13 +219,15 @@ Func RunInstall($windowName)
          ConsoleWrite("Click Yes")
          ControlClick($errorDialogWindows, "", 2)
        EndIf
+     EndIf
 
+     If WinExists($windowName) Then
        $installationCompleted = ControlGetHandle($windowName, "", 1312)
        If $installationCompleted Then
          $waiting = False
        EndIf
      EndIf
-
+  
      $counter = $counter + 1
      If $counter > 1200 Then
        $waiting = False
