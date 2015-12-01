@@ -1,4 +1,5 @@
 #RequireAdmin
+#include <ScreenCapture.au3>
 
 $WindowName = "[Title:Sage CRM setup; CLASS:#32770]"
 Global $LicenseName = "<%= node['sagecrm']['properties']['License']['Name']  %>"
@@ -36,9 +37,15 @@ Global $BPPhone = "<%= node['sagecrm']['properties']['Registration']['BPPhone'] 
 
 $WorkingDirectory = "<%= @WorkingDirectory %>"
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
+
 Run($WorkingDirectory & "\setup.exe /L0x0409 SageCRMstd", $WorkingDirectory)
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep2.jpg")
+
 WinActive($WindowName)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep3.jpg")
 
 RunInstall($WindowName)
 
@@ -79,15 +86,21 @@ Func RunInstall($windowName)
 
    $PollDuration = 500
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep4.jpg")
+
    WinWaitActive($windowName)
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep4b.jpg")
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep5.jpg")
    WinWaitActive($windowName)
    ControlClick($windowName, "I accept the terms of the license agrement", 1000)
 
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
 
    WinWaitActive($windowName)
    ;Text in fields is auto populated, so set the values after it is auto populated
@@ -97,13 +110,19 @@ Func RunInstall($windowName)
    ControlSetText($windowName, "", 302, $LicenseCompany)
    ControlSetText($windowName, "", 303, $LicenseSerial)
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep7.jpg")
+
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep8.jpg")
 
    WinWaitActive($windowName)
 
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
 
    WinWaitActive($windowName)
    ;Text in fields is auto populated, so set the values after it is auto populated
@@ -114,10 +133,14 @@ Func RunInstall($windowName)
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
+   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep10.jpg")
+
    WinWaitActive($windowName)
 
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
+
+   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep11.jpg")
 
    WinWaitActive($windowName)
    ;Text in fields is auto populated, so set the values after it is auto populated
@@ -130,6 +153,8 @@ Func RunInstall($windowName)
 
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
 
    ;We checking if there is an error connecting to the database server
    sleep(250)
@@ -144,12 +169,17 @@ Func RunInstall($windowName)
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
+
+
    WinWaitActive($windowName)
 
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
    WinWaitActive($windowName)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
 
    ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Currency)
    WinWaitActive($windowName) ;Give it time to update text on screen
@@ -157,12 +187,17 @@ Func RunInstall($windowName)
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
+
    WinWaitActive($windowName)
 
    ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Country)
    WinWaitActive($windowName) ;Give it time to update text on screen
    ControlSetText($windowName, "", 1002, $AreaCode)
    ControlSetText($windowName, "", 1003, $OutNumber)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
@@ -187,15 +222,21 @@ Func RunInstall($windowName)
 
    Else
      ControlCommand($windowName, "", 1202, "UnCheck", "")
-   EndIf
+  EndIf
+
+  _ScreenCapture_Capture($WorkingDirectory & "\InstallStep16.jpg")
 
    WinWaitActive($windowName)
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
 
+   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep17.jpg")
+
    WinWaitActive($windowName)
    ConsoleWrite("Click next")
    ControlClick($windowName, "Next", 1)
+
+   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep18.jpg")
 
    $waiting = True
    $counter = 1
@@ -209,6 +250,8 @@ Func RunInstall($windowName)
          WinActive($errorDialogWindows)
          WinWaitActive($errorDialogWindows)
 
+     _ScreenCapture_Capture($WorkingDirectory & "\InstallStep19.jpg")
+
          ConsoleWrite("Click Yes")
          ControlClick($errorDialogWindows, "", 6)
        EndIf
@@ -217,6 +260,8 @@ Func RunInstall($windowName)
        if $urlRewriterHeadache Then
          WinActive($errorDialogWindows)
          WinWaitActive($errorDialogWindows)
+
+     _ScreenCapture_Capture($WorkingDirectory & "\InstallStep20.jpg")
 
          ConsoleWrite("Click Yes")
          ControlClick($errorDialogWindows, "", 2)
@@ -229,13 +274,15 @@ Func RunInstall($windowName)
          $waiting = False
        EndIf
      EndIf
-  
+
      $counter = $counter + 1
      If $counter > 1200 Then
        $waiting = False
      EndIf
      Sleep(500)
    WEnd
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
 
    WinActive($windowName)
 
@@ -248,6 +295,8 @@ Func RunInstall($windowName)
    ControlSetText($windowName, "", 1325, $BPEmail )
    ControlSetText($windowName, "", 1329, $BPPhone )
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
+
    ConsoleWrite("Click next")
    ControlClick($windowName, "", 1)
 
@@ -256,8 +305,12 @@ Func RunInstall($windowName)
    ControlCommand($windowName, "", 501, "UnCheck", "")
    ControlCommand($windowName, "", 502, "UnCheck", "")
 
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep23.jpg")
+
    ConsoleWrite("Click next")
    ControlClick($windowName, "", 1)
+
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep24.jpg")
 
    Return True
 EndFunc
