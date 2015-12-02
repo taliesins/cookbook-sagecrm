@@ -108,7 +108,7 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
   not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
-include_recipe[windows_autologin]
+include_recipe 'windows_autologin'
 
 reboot 'now' do
   action :nothing
@@ -124,4 +124,4 @@ end
 
 node.set['windows_autologin']['enable'] = false
 
-include_recipe[windows_autologin]
+include_recipe 'windows_autologin'
