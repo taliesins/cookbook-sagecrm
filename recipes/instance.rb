@@ -109,7 +109,7 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
 end
 
 if !sagecrm_installed
-  node.set['windows_autologin']['autologincount'] = 1
+  node.override['windows_autologin']['autologincount'] = 1
   include_recipe 'windows_autologin'
 end
 
@@ -127,8 +127,8 @@ end
 
 #Wait some how
 
-#node.set['windows_autologin']['autologincount'] = nil
-#node.set['windows_autologin']['enable'] = false
+#node.override['windows_autologin']['autologincount'] = nil
+#node.override['windows_autologin']['enable'] = false
 
 #include_recipe 'windows_autologin'
 
