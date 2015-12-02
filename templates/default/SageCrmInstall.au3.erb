@@ -53,6 +53,13 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep3.jpg")
 RunInstall($WindowName)
 
 LogToChefLog($ChefLogFile, "Finished installing...")
+
+;Logoff
+
+If $CmdLine[0] > 0 And $CmdLine[0] == '-Logoff' Then
+  Run("shutdown -l")
+EndIf
+
 Exit(0)
 
 Func LogToChefLog($logFile, $message)
