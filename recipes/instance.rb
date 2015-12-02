@@ -108,7 +108,20 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
   not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
-execute "Install #{win_friendly_sagecrm_install_exe_path}" do
-  command "\"#{File.join(node['pstools']['home'], 'psexec.exe')}\" -accepteula -i -s \"#{win_friendly_sagecrm_install_exe_path}\""
-  not_if {sagecrm_installed}
+include_recipe[windows_autologin]
+
+reboot 'now' do
+  action :nothing
+  reason 'Cannot continue Chef run without a reboot.'
 end
+
+registry_key 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce' do
+  values [{:name => 'install_sage_crm', :type => :string, :data => win_friendly_sagecrm_install_exe_path}
+  action :create
+end
+
+#Wait some how
+
+node.set['windows_autologin']['enable'] = false
+
+include_recipe[windows_autologin]

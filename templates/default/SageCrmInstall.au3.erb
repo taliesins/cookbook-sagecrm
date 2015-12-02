@@ -1,3 +1,4 @@
+#include <Date.au3>
 #RequireAdmin
 #include <ScreenCapture.au3>
 
@@ -34,8 +35,10 @@ Global $BPName = "<%= node['sagecrm']['properties']['Registration']['BPName'] %>
 Global $BPContact = "<%= node['sagecrm']['properties']['Registration']['BPContact'] %>"
 Global $BPEmail = "<%= node['sagecrm']['properties']['Registration']['BPEmail'] %>"
 Global $BPPhone = "<%= node['sagecrm']['properties']['Registration']['BPPhone'] %>"
+Global $ChefLogFile = "C:\Windows\Temp\WinRM_Elevated_Shell.log"
 
 $WorkingDirectory = "<%= @WorkingDirectory %>"
+
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
 
@@ -49,11 +52,26 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep3.jpg")
 
 RunInstall($WindowName)
 
-ConsoleWrite("Finished installing...")
+LogToChefLog($ChefLogFile, "Finished installing...")
 Exit(0)
 
+Func LogToChefLog($logFile, $message)
+   $currentDateTime = _DateFormat(_DateTimeFormat(_NowCalc(), 1), "yyyy-MM-ddTHH:mm:ss+00:00")
+   $formattedMesage = "[" & $currentDateTime & "] INFO: " & $message
+   FileWriteLine($logFile, $message)
+EndFunc
+
+Func _DateFormat($Date, $style)
+    Local $hGui = GUICreate("My GUI get date", 200, 200, 800, 200)
+    Local $idDate = GUICtrlCreateDate($Date, 10, 10, 185, 20)
+    GUICtrlSendMsg($idDate, 0x1032, 0, $style)
+    Local $sReturn = GUICtrlRead($idDate)
+    GUIDelete($hGui)
+    Return $sReturn
+EndFunc
+
 Func WaitForControl($windowName, $controlId, $pollDuration)
-   ConsoleWrite("Waiting for control...")
+   LogToChefLog($ChefLogFile, "Waiting for control...")
    $hCtrl = 0
    $Waiting = True
    $counter = 1
@@ -61,28 +79,28 @@ Func WaitForControl($windowName, $controlId, $pollDuration)
      If WinExists($windowName) Then
        $hCtrl = ControlGetHandle($windowName, "", $controlId)
        If $hCtrl Then
-         ConsoleWrite("Succeeded waiting for control...")
+         LogToChefLog($ChefLogFile, "Succeeded waiting for control...")
          Return True
        Else
          $counter = $counter + 1
          If $counter > 60 Then
-            ConsoleWrite("Failed while waiting for control...")
+            LogToChefLog($ChefLogFile, "Failed while waiting for control...")
          Return False
          EndIf
-         ConsoleWrite("Sleep for now...")
+         LogToChefLog($ChefLogFile, "Sleep for now...")
          Sleep($pollDuration)
        EndIf
      Else
-       ConsoleWrite("Failed while waiting for control...")
+       LogToChefLog($ChefLogFile, "Failed while waiting for control...")
        Return False
      EndIf
    WEnd
-   ConsoleWrite("Failed while waiting for control...")
+   LogToChefLog($ChefLogFile, "Failed while waiting for control...")
    Return False
 EndFunc
 
 Func RunInstall($windowName)
-   ConsoleWrite("Installing...")
+   LogToChefLog($ChefLogFile, "Installing...")
 
    $PollDuration = 500
 
@@ -90,14 +108,14 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep4.jpg")
 
    WinWaitActive($windowName)
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep4b.jpg")
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep5.jpg")
    WinWaitActive($windowName)
    ControlClick($windowName, "I accept the terms of the license agrement", 1000)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
@@ -112,14 +130,14 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep7.jpg")
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep8.jpg")
 
    WinWaitActive($windowName)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
@@ -130,14 +148,14 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
 
    ControlSetText($windowName, "", 4, $DatabaseName)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep10.jpg")
 
    WinWaitActive($windowName)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep11.jpg")
@@ -151,7 +169,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
    ControlSetText($windowName, "", 301, $DatabaseUsername)
    ControlSetText($windowName, "", 305, $DatabasePassword)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
@@ -166,7 +184,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
    WinWaitActive($windowName)
    ControlClick($windowName, "", 602)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
@@ -174,7 +192,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
 
    WinWaitActive($windowName)
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
    WinWaitActive($windowName)
@@ -184,7 +202,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
    ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Currency)
    WinWaitActive($windowName) ;Give it time to update text on screen
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
 
@@ -199,7 +217,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
    WinWaitActive($windowName)
@@ -227,13 +245,13 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep16.jpg")
 
    WinWaitActive($windowName)
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep17.jpg")
 
    WinWaitActive($windowName)
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep18.jpg")
@@ -252,7 +270,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
      _ScreenCapture_Capture($WorkingDirectory & "\InstallStep19.jpg")
 
-         ConsoleWrite("Click Yes")
+         LogToChefLog($ChefLogFile, "Click Yes")
          ControlClick($errorDialogWindows, "", 6)
        EndIf
 
@@ -263,7 +281,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
      _ScreenCapture_Capture($WorkingDirectory & "\InstallStep20.jpg")
 
-         ConsoleWrite("Click Yes")
+         LogToChefLog($ChefLogFile, "Click Yes")
          ControlClick($errorDialogWindows, "", 2)
        EndIf
      EndIf
@@ -297,7 +315,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "", 1)
 
    WinWaitActive($windowName)
@@ -307,7 +325,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep23.jpg")
 
-   ConsoleWrite("Click next")
+   LogToChefLog($ChefLogFile, "Click next")
    ControlClick($windowName, "", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep24.jpg")
