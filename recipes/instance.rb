@@ -110,14 +110,14 @@ end
 
 include_recipe 'windows_autologin'
 
-reboot 'now' do
-  action :nothing
-  reason 'Cannot continue Chef run without a reboot.'
-end
-
 registry_key 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce' do
   values [{:name => 'install_sage_crm', :type => :string, :data => win_friendly_sagecrm_install_exe_path}]
   action :create
+end
+
+reboot 'now' do
+  action :reboot_now
+  reason 'Need to run SageCrm installer in interactive mode that is not in Session 0.'
 end
 
 #Wait some how
