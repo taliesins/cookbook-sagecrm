@@ -116,7 +116,7 @@ reboot 'now' do
 end
 
 registry_key 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce' do
-  values [{:name => 'install_sage_crm', :type => :string, :data => win_friendly_sagecrm_install_exe_path}
+  values [{:name => 'install_sage_crm', :type => :string, :data => win_friendly_sagecrm_install_exe_path}]
   action :create
 end
 
