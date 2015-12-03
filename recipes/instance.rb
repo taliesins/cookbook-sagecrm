@@ -108,31 +108,3 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
   not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
-if !sagecrm_installed
-  node.override['windows_autologin']['autologincount'] = 1
-  include_recipe 'windows_autologin'
-end
-
-registry_key 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce' do
-  values [{:name => 'install_sage_crm', :type => :string, :data => "\"#{win_friendly_sagecrm_install_exe_path}\" -Logoff"}]
-  action :create
-  notifies :reboot_now, 'reboot[now]', :immediately
-  not_if {sagecrm_installed}
-end
-
-reboot 'now' do
-  action :nothing
-  reason 'Cannot continue Chef run without a reboot.'
-end
-
-#Wait some how
-
-#node.override['windows_autologin']['autologincount'] = nil
-#node.override['windows_autologin']['enable'] = false
-
-#include_recipe 'windows_autologin'
-
-#reboot 'now' do
-#  action :reboot_now
-#  reason 'Need to run SageCrm installer in interactive mode that is not in Session 0.'
-#end
