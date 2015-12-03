@@ -50,11 +50,11 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep3.jpg")
 
 RunInstall($WindowName)
 
-Log("Finished installing...")
+LogToOutput("Finished installing...")
 
 Exit(0)
 
-Func Log($message)
+Func LogToOutput($message)
    $currentDateTime = _DateFormat(_DateTimeFormat(_NowCalc(), 1), "yyyy-MM-ddTHH:mm:ss+00:00")
    $formattedMesage = "[" & $currentDateTime & "] INFO: " & $message
 
@@ -71,7 +71,7 @@ Func _DateFormat($Date, $style)
 EndFunc
 
 Func WaitForControl($windowName, $controlId, $pollDuration)
-   Log("Waiting for control...")
+   LogToOutput("Waiting for control...")
    $hCtrl = 0
    $Waiting = True
    $counter = 1
@@ -79,28 +79,28 @@ Func WaitForControl($windowName, $controlId, $pollDuration)
      If WinExists($windowName) Then
        $hCtrl = ControlGetHandle($windowName, "", $controlId)
        If $hCtrl Then
-         Log("Succeeded waiting for control...")
+         LogToOutput("Succeeded waiting for control...")
          Return True
        Else
          $counter = $counter + 1
          If $counter > 60 Then
-            Log("Failed while waiting for control...")
+            LogToOutput("Failed while waiting for control...")
          Return False
          EndIf
-         Log("Sleep for now...")
+         LogToOutput("Sleep for now...")
          Sleep($pollDuration)
        EndIf
      Else
-       Log("Failed while waiting for control...")
+       LogToOutput("Failed while waiting for control...")
        Return False
      EndIf
    WEnd
-   Log("Failed while waiting for control...")
+   LogToOutput("Failed while waiting for control...")
    Return False
 EndFunc
 
 Func RunInstall($windowName)
-   Log("Installing...")
+   LogToOutput("Installing...")
 
    $PollDuration = 500
 
@@ -108,14 +108,14 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep4.jpg")
 
    WinWaitActive($windowName)
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep4b.jpg")
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep5.jpg")
    WinWaitActive($windowName)
    ControlClick($windowName, "I accept the terms of the license agrement", 1000)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
@@ -130,14 +130,14 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep7.jpg")
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep8.jpg")
 
    WinWaitActive($windowName)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
@@ -148,14 +148,14 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
 
    ControlSetText($windowName, "", 4, $DatabaseName)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep10.jpg")
 
    WinWaitActive($windowName)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep11.jpg")
@@ -169,7 +169,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
    ControlSetText($windowName, "", 301, $DatabaseUsername)
    ControlSetText($windowName, "", 305, $DatabasePassword)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
@@ -184,7 +184,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
    WinWaitActive($windowName)
    ControlClick($windowName, "", 602)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
@@ -192,7 +192,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
 
    WinWaitActive($windowName)
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
    WinWaitActive($windowName)
@@ -202,7 +202,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
    ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Currency)
    WinWaitActive($windowName) ;Give it time to update text on screen
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
 
@@ -217,7 +217,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
    WinWaitActive($windowName)
@@ -245,13 +245,13 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep16.jpg")
 
    WinWaitActive($windowName)
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep17.jpg")
 
    WinWaitActive($windowName)
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "Next", 1)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep18.jpg")
@@ -270,7 +270,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
      _ScreenCapture_Capture($WorkingDirectory & "\InstallStep19.jpg")
 
-         Log("Click Yes")
+         LogToOutput("Click Yes")
          ControlClick($errorDialogWindows, "", 6)
        EndIf
 
@@ -281,7 +281,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
      _ScreenCapture_Capture($WorkingDirectory & "\InstallStep20.jpg")
 
-         Log("Click Yes")
+         LogToOutput("Click Yes")
          ControlClick($errorDialogWindows, "", 2)
        EndIf
      EndIf
@@ -315,7 +315,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "", 1)
 
    WinWaitActive($windowName)
@@ -325,7 +325,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep23.jpg")
 
-   Log("Click next")
+   LogToOutput("Click next")
    ControlClick($windowName, "", 1)
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep24.jpg")
