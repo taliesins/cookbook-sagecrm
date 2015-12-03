@@ -54,7 +54,7 @@ Log("Finished installing...")
 
 Exit(0)
 
-Func Log($logFile, $message)
+Func Log($message)
    $currentDateTime = _DateFormat(_DateTimeFormat(_NowCalc(), 1), "yyyy-MM-ddTHH:mm:ss+00:00")
    $formattedMesage = "[" & $currentDateTime & "] INFO: " & $message
 
