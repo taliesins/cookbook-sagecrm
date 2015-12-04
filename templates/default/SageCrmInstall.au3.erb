@@ -56,9 +56,9 @@ Exit(0)
 
 Func LogToOutput($message)
    $currentDateTime = _DateFormat(_DateTimeFormat(_NowCalc(), 1), "yyyy-MM-ddTHH:mm:ss+00:00")
-   $formattedMesage = "[" & $currentDateTime & "] INFO: " & $message
+   $formattedMesage = "[" & $currentDateTime & "] INFO: " & $message & @CRLF
 
-   ConsoleWriteLine($formattedMesage)
+   ConsoleWrite($formattedMesage)
 EndFunc
 
 Func _DateFormat($Date, $style)
