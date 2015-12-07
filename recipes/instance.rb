@@ -182,8 +182,8 @@ Function Invoke-InDesktopSession {
     }
 }
 
-$username = "#{default['sagecrm']['installaccount']['account']}"
-$password = "#{default['sagecrm']['installaccount']['password']}"
+$username = "#{node['sagecrm']['installaccount']['account']}"
+$password = "#{node['sagecrm']['installaccount']['password']}"
 $command = "#{win_friendly_sagecrm_install_exe_path}"
 $psexecPath = "#{win_friendly_psexec_path}"
 $rdpplusPath = "#{win_friendly_rdpplus_path}"
