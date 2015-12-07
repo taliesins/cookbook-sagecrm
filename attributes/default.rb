@@ -25,10 +25,12 @@ default['sagecrm']['url'] = 'http://www.yourserver.com/' + default['sagecrm']['f
 default['sagecrm']['checksum'] = '677b2d0d6dabbd8a0bb5977d50532379166f2f03b8da28853257786a4e41669c'
 default['sagecrm']['home'] = "#{Chef::Config['file_cache_path']}/#{node['sagecrm']['filename']}/#{node['sagecrm']['checksum']}"
 
-
 default['sagecrm']['service']['account'] = '.\SageCRM' # e.g. SageCRM. This account is used to access the database server, so ensure that database permission have been configured. This account is used to run service, so ensure that it has the correct permissions on each node. If using multiple nodes, active directory is required.
 default['sagecrm']['service']['password'] = 'P@ssw0rd' # e.g. P@ssw0rd. This is the password to use if creating a windows account locally to use.
 default['sagecrm']['service']['group'] = 'Administrators'
+
+default['sagecrm']['installaccount']['account'] = node['sagecrm']['service']['account']
+default['sagecrm']['installaccount']['password'] = node['sagecrm']['service']['password']
 
 username = node['sagecrm']['service']['account']
 domain = ""

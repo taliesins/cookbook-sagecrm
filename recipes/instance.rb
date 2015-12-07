@@ -108,3 +108,89 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
   not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
+win_friendly_psexec_path = win_friendly_path(File.join(node['autoit']['home'], '/psexec.exe'))
+win_friendly_rdpplus_path = win_friendly_path(File.join(node['autoit']['rdpplus'], '/rdp.exe'))
+
+powershell_script 'Install-SageCrm' do
+    code <<-EOH1    
+Function Get-ComputerSessions {
+[cmdletbinding(
+    DefaultParameterSetName = 'session',
+    ConfirmImpact = 'low'
+)]
+    Param(
+        [Parameter(
+            Mandatory = $False,
+            Position = 0,
+            ValueFromPipeline = $True)]
+            [string[]]$computer
+            )
+Begin {
+    $report = @()
+    }
+Process {
+    if ($computer){
+    }else{
+        $computer = @("localhost")
+    }
+
+    ForEach($c in $computer) {
+        # Parse 'query session' and store in $sessions:
+        $sessions = query session /server:$c
+            1..($sessions.count -1) | % {
+                $temp = "" | Select Computer,SessionName, Username, Id, State, Type, Device
+                $temp.Computer = $c
+                $temp.SessionName = $sessions[$_].Substring(1,18).Trim()
+                $temp.Username = $sessions[$_].Substring(19,20).Trim()
+                $temp.Id = $sessions[$_].Substring(39,9).Trim()
+                $temp.State = $sessions[$_].Substring(48,8).Trim()
+                $temp.Type = $sessions[$_].Substring(56,12).Trim()
+                $temp.Device = $sessions[$_].Substring(68).Trim()
+                $report += $temp
+            }
+        }
+    }
+End {
+    $report
+    }
+}
+
+Function Invoke-InDesktopSession {
+    Param(        
+            [string]$username,
+            [string]$password,
+            [string]$command,
+            [string]$psexecPath,
+            [string]$rdpplusPath
+            )
+    
+    $computer = @("localhost")              
+    $existingSessionForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username}
+
+    if ($existingSessionForUser) {
+        $sessionIdForUser = $existingSessionForUser.Id
+    } else {
+        &"$rdpplusPath" /v:$computer /u:$username /p:$password
+        $sessionIdForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username} | %{$_.Id} 
+    }
+
+    &"$($psexecPath)" -accepteula -i $($sessionIdForUser) $($command)
+
+    if ($existingSessionForUser) {
+    } else {
+        &"$($psexecPath)" -accepteula -i $($sessionIdForUser) shutdown -l
+    }
+}
+
+$username = "#{default['sagecrm']['installaccount']['account']}"
+$password = "#{default['sagecrm']['installaccount']['password']}"
+$command = "#{win_friendly_sagecrm_install_exe_path}"
+$psexecPath = "#{win_friendly_psexec_path}"
+$rdpplusPath = "#{win_friendly_rdpplus_path}"
+
+Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
+  "
+EOH1
+    action :run
+    not_if {sagecrm_installed}
+end
