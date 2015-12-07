@@ -109,7 +109,7 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
 end
 
 win_friendly_psexec_path = win_friendly_path(File.join(node['autoit']['home'], '/psexec.exe'))
-win_friendly_rdpplus_path = win_friendly_path(File.join(node['autoit']['rdpplus'], '/rdp.exe'))
+win_friendly_rdpplus_path = win_friendly_path(File.join(node['rdpplus']['home'], '/rdp.exe'))
 
 powershell_script 'Install-SageCrm' do
     code <<-EOH1    
