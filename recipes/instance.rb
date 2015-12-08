@@ -110,95 +110,12 @@ end
 
 win_friendly_psexec_path = win_friendly_path(File.join(node['pstools']['home'], 'psexec.exe'))
 win_friendly_rdpplus_path = win_friendly_path(File.join(node['rdpplus']['home'], 'rdp.exe'))
+win_friendly_powershell_helper_path = win_friendly_path(File.join(node['autoit']['home'], 'Invoke-InDesktopSession.ps1'))
 
 powershell_script 'Install-SageCrm' do
     code <<-EOH1    
-$ErrorActionPreference = "Stop"    
-Function Get-ComputerSessions {
-[cmdletbinding(
-    DefaultParameterSetName = 'session',
-    ConfirmImpact = 'low'
-)]
-    Param(
-        [Parameter(
-            Mandatory = $False,
-            Position = 0,
-            ValueFromPipeline = $True)]
-            [string[]]$computer
-            )
-Begin {
-    $report = @()
-    }
-Process {
-    if ($computer){
-    }else{
-        $computer = @("localhost")
-    }
 
-    ForEach($c in $computer) {
-        # Parse 'query session' and store in $sessions:
-        $sessions = query session /server:$c
-            1..($sessions.count -1) | % {
-                $temp = "" | Select Computer,SessionName, Username, Id, State, Type, Device
-                $temp.Computer = $c
-                $temp.SessionName = $sessions[$_].Substring(1,18).Trim()
-                $temp.Username = $sessions[$_].Substring(19,20).Trim()
-                $temp.Id = $sessions[$_].Substring(39,9).Trim()
-                $temp.State = $sessions[$_].Substring(48,8).Trim()
-                $temp.Type = $sessions[$_].Substring(56,12).Trim()
-                $temp.Device = $sessions[$_].Substring(68).Trim()
-                $report += $temp
-            }
-        }
-    }
-End {
-    $report
-    }
-}
-
-Function Invoke-InDesktopSession {
-    Param(        
-            [string]$username,
-            [string]$password,
-            [string]$command,
-            [string]$psexecPath,
-            [string]$rdpplusPath
-            )
-    
-    $domain = ""
-    if ($username -match "\\") {
-        $domain = $username.split('\\')[0]
-        $username = $username.split('\\')[1]
-    }
-
-    if ($username -match "@") {
-        $domain = $username.split('@')[1]
-        $username = $username.split('@')[0]
-    }
-
-    $computer = @("localhost")              
-    $existingSessionForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username}
-
-    if ($existingSessionForUser) {
-        $sessionIdForUser = $existingSessionForUser.Id
-    } else {
-        &"$rdpplusPath" /v:$computer /u:$username /p:$password
-        $sessionIdForUser = $null
-        while (!$sessionIdForUser) {
-            sleep 1
-            $sessionIdForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username} | %{$_.Id} 
-        }
-    }
-
-    $process = Start-Process -FilePath $psexecPath -ArgumentList "-accepteula -i $sessionIdForUser $command" -NoNewWindow -PassThru -Wait
-    $process.ExitCode
-
-    if ($existingSessionForUser) {
-    } else {
-        $process = Start-Process -FilePath $psexecPath -ArgumentList "-accepteula -i $sessionIdForUser shutdown -l" -NoNewWindow -PassThru -Wait
-        $process.ExitCode
-    }
-}
+. "#{win_friendly_powershell_helper_path}"
 
 $username = '#{node['sagecrm']['installaccount']['account']}'
 $password = '#{node['sagecrm']['installaccount']['password']}'
