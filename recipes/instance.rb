@@ -113,8 +113,7 @@ win_friendly_rdpplus_path = win_friendly_path(File.join(node['rdpplus']['home'],
 win_friendly_powershell_helper_path = win_friendly_path(File.join(node['autoit']['home'], 'Invoke-InDesktopSession.ps1'))
 
 powershell_script 'Install-SageCrm' do
-    code <<-EOH1    
-
+    code <<-EOH1
 . "#{win_friendly_powershell_helper_path}"
 
 $username = '#{node['sagecrm']['installaccount']['account']}'
@@ -124,7 +123,6 @@ $psexecPath = '#{win_friendly_psexec_path}'
 $rdpplusPath = '#{win_friendly_rdpplus_path}'
 
 Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
-  "
 EOH1
     action :run
     not_if {sagecrm_installed}
