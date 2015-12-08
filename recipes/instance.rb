@@ -108,11 +108,12 @@ execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
   not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
-win_friendly_psexec_path = win_friendly_path(File.join(node['autoit']['home'], 'psexec.exe'))
+win_friendly_psexec_path = win_friendly_path(File.join(node['pstools']['home'], 'psexec.exe'))
 win_friendly_rdpplus_path = win_friendly_path(File.join(node['rdpplus']['home'], 'rdp.exe'))
 
 powershell_script 'Install-SageCrm' do
     code <<-EOH1    
+$ErrorActionPreference = "Stop"    
 Function Get-ComputerSessions {
 [cmdletbinding(
     DefaultParameterSetName = 'session',
@@ -164,6 +165,17 @@ Function Invoke-InDesktopSession {
             [string]$rdpplusPath
             )
     
+    $domain = ""
+    if ($username -match "\\") {
+        $domain = $username.split('\\')[0]
+        $username = $username.split('\\')[1]
+    }
+
+    if ($username -match "@") {
+        $domain = $username.split('@')[1]
+        $username = $username.split('@')[0]
+    }
+
     $computer = @("localhost")              
     $existingSessionForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username}
 
@@ -171,22 +183,28 @@ Function Invoke-InDesktopSession {
         $sessionIdForUser = $existingSessionForUser.Id
     } else {
         &"$rdpplusPath" /v:$computer /u:$username /p:$password
-        $sessionIdForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username} | %{$_.Id} 
+        $sessionIdForUser = $null
+        while (!$sessionIdForUser) {
+            sleep 1
+            $sessionIdForUser = Get-ComputerSessions -computer $computer | ?{$_.Username -eq $username} | %{$_.Id} 
+        }
     }
 
-    &"$($psexecPath)" -accepteula -i $($sessionIdForUser) $($command)
+    $process = Start-Process -FilePath $psexecPath -ArgumentList "-accepteula -i $sessionIdForUser $command" -NoNewWindow -PassThru -Wait
+    $process.ExitCode
 
     if ($existingSessionForUser) {
     } else {
-        &"$($psexecPath)" -accepteula -i $($sessionIdForUser) shutdown -l
+        $process = Start-Process -FilePath $psexecPath -ArgumentList "-accepteula -i $sessionIdForUser shutdown -l" -NoNewWindow -PassThru -Wait
+        $process.ExitCode
     }
 }
 
-$username = "#{node['sagecrm']['installaccount']['account']}"
-$password = "#{node['sagecrm']['installaccount']['password']}"
-$command = "#{win_friendly_sagecrm_install_exe_path}"
-$psexecPath = "#{win_friendly_psexec_path}"
-$rdpplusPath = "#{win_friendly_rdpplus_path}"
+$username = '#{node['sagecrm']['installaccount']['account']}'
+$password = '#{node['sagecrm']['installaccount']['password']}'
+$command = '#{win_friendly_sagecrm_install_exe_path}'
+$psexecPath = '#{win_friendly_psexec_path}'
+$rdpplusPath = '#{win_friendly_rdpplus_path}'
 
 Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
   "
