@@ -42,6 +42,8 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
 
 Run($WorkingDirectory & "\setup.exe /L0x0409 SageCRMstd", $WorkingDirectory)
 
+WinActivate($WindowName)
+
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep2.jpg")
 
 WinActive($WindowName)
@@ -265,6 +267,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
        $unableToConnectToDatabase = ControlGetHandle($errorDialogWindows, "", 6)
        $shouldStopIIS = ControlGetHandle($errorDialogWindows, "", 6)
        If $shouldStopIIS Then
+         WinActivate($errorDialogWindows)
          WinActive($errorDialogWindows)
          WinWaitActive($errorDialogWindows)
 
@@ -276,6 +279,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
        $urlRewriterHeadache = ControlGetHandle($errorDialogWindows, "", 2)
        if $urlRewriterHeadache Then
+         WinActivate($errorDialogWindows)
          WinActive($errorDialogWindows)
          WinWaitActive($errorDialogWindows)
 
@@ -302,6 +306,7 @@ _ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
 
+   WinActivate($windowName)
    WinActive($windowName)
 
    ControlSetText($windowName, "", 1312, $CompanyContact )
