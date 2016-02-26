@@ -10,7 +10,7 @@
 iis_pool 'CRM App Pool' do
   runtime_version "2.0"
   pipeline_mode :Integrated
-  thirty_two_bit : true
+  thirty_two_bit true
   action :add
 end
 
