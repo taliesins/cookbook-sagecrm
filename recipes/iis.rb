@@ -7,6 +7,10 @@
 # All rights reserved - Do Not Redistribute
 #
 
+template "#{default['sagecrm']['application']['sdata']['physical_path']}\\web.config" do
+  source 'web.config.erb'
+end
+
 iis_pool node['sagecrm']['website']['main']['application_pool'] do
   runtime_version '2.0'
   pipeline_mode :Integrated
@@ -14,6 +18,13 @@ iis_pool node['sagecrm']['website']['main']['application_pool'] do
 end
 
 iis_pool node['sagecrm']['application']['crm']['application_pool'] do
+  runtime_version '2.0'
+  pipeline_mode :Integrated
+  thirty_two_bit true
+  action :add
+end
+
+iis_pool node['sagecrm']['application']['sdata']['application_pool'] do
   runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
@@ -30,12 +41,21 @@ iis_site node['sagecrm']['website']['main']['name'] do
   action [:add,:start]
 end
 
-iis_app 'CRM' do
+iis_app node['sagecrm']['application']['crm']['name'] do
   site_name node['sagecrm']['website']['main']['name']
   path node['sagecrm']['application']['crm']['path']
   application_pool node['sagecrm']['application']['crm']['application_pool']
   physical_path node['sagecrm']['application']['crm']['physical_path']
   enabled_protocols node['sagecrm']['application']['crm']['enabled_protocols']
+  action :add
+end
+
+iis_app node['sagecrm']['application']['sdata']['name'] do
+  site_name node['sagecrm']['website']['main']['name']
+  path node['sagecrm']['application']['sdata']['path']
+  application_pool node['sagecrm']['application']['sdata']['application_pool']
+  physical_path node['sagecrm']['application']['sdata']['physical_path']
+  enabled_protocols node['sagecrm']['application']['sdata']['enabled_protocols']
   action :add
 end
 

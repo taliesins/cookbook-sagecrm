@@ -127,3 +127,9 @@ default['sagecrm']['application']['crm']['application_pool'] = 'CRM App Pool'
 default['sagecrm']['application']['crm']['path'] = '/CRM'
 default['sagecrm']['application']['crm']['physical_path'] = "#{node['sagecrm']['instance']['install_dir']}CRM\\WWWRoot"
 default['sagecrm']['application']['crm']['enabled_protocols'] = 'http'
+
+default['sagecrm']['application']['sdata']['name'] = 'sdata'
+default['sagecrm']['application']['sdata']['application_pool'] = 'CRMRewriter App Pool'
+default['sagecrm']['application']['sdata']['path'] = '/sdata'
+default['sagecrm']['application']['sdata']['physical_path'] = "#{node['sagecrm']['instance']['install_dir']}Services\\IISUtils\\CRMRewriter"
+default['sagecrm']['application']['sdata']['enabled_protocols'] = 'http'
