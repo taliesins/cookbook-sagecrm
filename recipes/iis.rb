@@ -41,24 +41,24 @@ end
 
 iis_config "/section:system.webServer/asp /enableParentPaths:\"True\" /commit:apphost" do
   action :set
-  notifies :restart, 'windows_service[W3SVC]'
+  notifies :run, 'execute[IISRESET]'
 end
 
 iis_config "/section:system.webServer/asp /scriptErrorSentToBrowser:\"True\" /commit:apphost" do
   action :set
-  notifies :restart, 'windows_service[W3SVC]'
+  notifies :run, 'execute[IISRESET]'
 end
 
 iis_config "/section:anonymousAuthentication /username:\"\" --password" do
   action :set
-  notifies :restart, 'windows_service[W3SVC]'
+  notifies :run, 'execute[IISRESET]'
 end
 
 iis_config "/section:handlers /accessPolicy:Read,Script,Execute" do
   action :set
-  notifies :restart, 'windows_service[W3SVC]'
+  notifies :run, 'execute[IISRESET]'
 end
 
-windows_service 'W3SVC' do
+execute 'IISRESET' do
   action :nothing
 end
