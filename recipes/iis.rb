@@ -8,7 +8,7 @@
 #
 
 iis_pool 'CRM App Pool' do
-  runtime_version "2.0"
+  runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
   action :add
@@ -17,14 +17,16 @@ end
 iis_site 'Default Web Site' do
   protocol :http
   port 80
-  path "C:\\inetpub\\WWWRoot"
+  path 'C:\inetpub\WWWRoot'
+  log_directory 'C:\inetpub\logs'
+  log_period :Monthly
   action [:add,:start]
 end
 
 iis_app 'CRM' do
-  path "/CRM"
+  path '/CRM'
   application_pool 'CRM App Pool'
   physical_path "#{node['sagecrm']['instance']['install_dir']}CRM\\WWWRoot"
-  enabled_protocols "http"
+  enabled_protocols 'http'
   action :add
 end
