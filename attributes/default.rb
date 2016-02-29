@@ -113,3 +113,17 @@ default['sagecrm']['properties']['Registration']['BPName'] = 'BP Company Name'
 default['sagecrm']['properties']['Registration']['BPContact'] = 'BP Contact Name'
 default['sagecrm']['properties']['Registration']['BPEmail'] = 'BPContactName@BPCompanyName.com'
 default['sagecrm']['properties']['Registration']['BPPhone'] = '+44111111'
+
+default['sagecrm']['website']['main']['name'] = 'Default Web Site'
+default['sagecrm']['website']['main']['application_pool'] = 'DefaultAppPool'
+default['sagecrm']['website']['main']['path'] = 'C:\inetpub\wwwroot'
+default['sagecrm']['website']['main']['log_directory'] = 'C:\inetpub\logs'
+default['sagecrm']['website']['main']['log_period'] = :Monthly
+default['sagecrm']['website']['main']['port'] = 80
+default['sagecrm']['website']['main']['protocol'] = :http
+
+default['sagecrm']['application']['crm']['name'] = 'CRM'
+default['sagecrm']['application']['crm']['application_pool'] = 'CRM App Pool'
+default['sagecrm']['application']['crm']['path'] = '/CRM'
+default['sagecrm']['application']['crm']['physical_path'] = "#{node['sagecrm']['instance']['install_dir']}CRM\\WWWRoot"
+default['sagecrm']['application']['crm']['enabled_protocols'] = 'http'

@@ -7,26 +7,34 @@
 # All rights reserved - Do Not Redistribute
 #
 
-iis_pool 'CRM App Pool' do
+iis_pool node['sagecrm']['website']['main']['application_pool'] do
+  runtime_version '2.0'
+  pipeline_mode :Integrated
+  action :add
+end
+
+iis_pool node['sagecrm']['application']['crm']['application_pool'] do
   runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
   action :add
 end
 
-iis_site 'Default Web Site' do
-  protocol :http
-  port 80
-  path 'C:\inetpub\WWWRoot'
-  log_directory 'C:\inetpub\logs'
-  log_period :Monthly
+iis_site node['sagecrm']['website']['main']['name'] do
+  application_pool node['sagecrm']['website']['main']['application_pool']
+  protocol node['sagecrm']['website']['main']['protocol']
+  port node['sagecrm']['website']['main']['port']
+  path node['sagecrm']['website']['main']['path']
+  log_directory node['sagecrm']['website']['main']['log_directory']
+  log_period node['sagecrm']['website']['main']['log_period']
   action [:add,:start]
 end
 
 iis_app 'CRM' do
-  path '/CRM'
-  application_pool 'CRM App Pool'
-  physical_path "#{node['sagecrm']['instance']['install_dir']}CRM\\WWWRoot"
-  enabled_protocols 'http'
+  site_name node['sagecrm']['website']['main']['name']
+  path node['sagecrm']['application']['crm']['path']
+  application_pool node['sagecrm']['application']['crm']['application_pool']
+  physical_path node['sagecrm']['application']['crm']['physical_path']
+  enabled_protocols node['sagecrm']['application']['crm']['enabled_protocols']
   action :add
 end
