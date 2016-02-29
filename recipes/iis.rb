@@ -12,12 +12,18 @@ template "#{node['sagecrm']['application']['sdata']['physical_path']}\\web.confi
 end
 
 iis_pool node['sagecrm']['website']['main']['application_pool'] do
+  pool_username node['sagecrm']['website']['main']['pool_username']
+  pool_password node['sagecrm']['website']['main']['pool_password']
+  pool_identity node['sagecrm']['website']['main']['pool_identity']
   runtime_version '2.0'
   pipeline_mode :Integrated
   action :add
 end
 
 iis_pool node['sagecrm']['application']['crm']['application_pool'] do
+  pool_username node['sagecrm']['application']['crm']['pool_username']
+  pool_password node['sagecrm']['application']['crm']['pool_password']
+  pool_identity node['sagecrm']['application']['crm']['pool_identity']  
   runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
@@ -25,6 +31,9 @@ iis_pool node['sagecrm']['application']['crm']['application_pool'] do
 end
 
 iis_pool node['sagecrm']['application']['sdata']['application_pool'] do
+  pool_username node['sagecrm']['application']['sdata']['pool_username']
+  pool_password node['sagecrm']['application']['sdata']['pool_password']
+  pool_identity node['sagecrm']['application']['sdata']['pool_identity']    
   runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
@@ -58,6 +67,21 @@ iis_app node['sagecrm']['application']['sdata']['name'] do
   enabled_protocols node['sagecrm']['application']['sdata']['enabled_protocols']
   action :add
 end
+
+if node['sagecrm']['application']['sdata']['pool_identity'] == :ApplicationPoolIdentity
+  app_pool = "IIS AppPool\\#{node['sagecrm']['application']['crm']['application_pool']}"
+else
+  app_pool = node['sagecrm']['application']['sdata']['pool_username']
+end
+
+set_permissions_for_crm = "icacls \"#{node['sagecrm']['instance']['install_dir']}\\#{node['sagecrm']['application']['crm']['name']}\" /t /grant \"#{app_pool}\":(F)"
+set_permissions_for_services = "icacls \"#{node['sagecrm']['instance']['install_dir']}\\Services\" /t /grant \"#{app_pool}\":(F)"
+
+execute set_permissions_for_crm do
+end 
+
+execute set_permissions_for_services do
+end 
 
 iis_config "/section:system.webServer/asp /enableParentPaths:\"True\" /commit:apphost" do
   action :set
