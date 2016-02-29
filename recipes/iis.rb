@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 
-template "#{default['sagecrm']['application']['sdata']['physical_path']}\\web.config" do
+template "#{node['sagecrm']['application']['sdata']['physical_path']}\\web.config" do
   source 'web.config.erb'
 end
 
