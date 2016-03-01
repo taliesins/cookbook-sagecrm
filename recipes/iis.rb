@@ -104,5 +104,6 @@ iis_config "/section:handlers /accessPolicy:Read,Script,Execute" do
 end
 
 execute 'IISRESET' do
+  command 'IISRESET /noforce /timeout:180'
   action :nothing
 end
