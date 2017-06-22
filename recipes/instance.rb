@@ -8,7 +8,7 @@
 #
 
 include_recipe 'autoit'
-include_recipe '7-zip'
+include_recipe 'seven_zip'
 
 if node['sagecrm']['service']['account'] == ""
     raise "Please configure Sage CRM service_account attribute"
@@ -104,7 +104,7 @@ remote_file download_path do
 end
 
 execute "Exract #{download_path} To #{win_friendly_installation_directory}" do
-  command "\"#{File.join(node['7-zip']['home'], '7z.exe')}\" x -y -o\"#{win_friendly_installation_directory}\" #{download_path}"
+  command "\"#{File.join(node['seven_zip']['home'], '7z.exe')}\" x -y -o\"#{win_friendly_installation_directory}\" #{download_path}"
   not_if {sagecrm_installed  || ::File.directory?(installation_directory)}
 end
 
