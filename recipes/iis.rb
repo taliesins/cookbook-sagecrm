@@ -12,18 +12,18 @@ template "#{node['sagecrm']['application']['sdata']['physical_path']}\\web.confi
 end
 
 iis_pool node['sagecrm']['website']['main']['application_pool'] do
-  pool_username node['sagecrm']['website']['main']['pool_username']
-  pool_password node['sagecrm']['website']['main']['pool_password']
-  pool_identity node['sagecrm']['website']['main']['pool_identity']
+  username node['sagecrm']['website']['main']['pool_username']
+  password node['sagecrm']['website']['main']['pool_password']
+  identity_type node['sagecrm']['website']['main']['pool_identity']
   runtime_version '2.0'
   pipeline_mode :Integrated
   action :add
 end
 
 iis_pool node['sagecrm']['application']['crm']['application_pool'] do
-  pool_username node['sagecrm']['application']['crm']['pool_username']
-  pool_password node['sagecrm']['application']['crm']['pool_password']
-  pool_identity node['sagecrm']['application']['crm']['pool_identity']  
+  username node['sagecrm']['application']['crm']['pool_username']
+  password node['sagecrm']['application']['crm']['pool_password']
+  identity_type node['sagecrm']['application']['crm']['pool_identity']  
   runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
@@ -31,9 +31,9 @@ iis_pool node['sagecrm']['application']['crm']['application_pool'] do
 end
 
 iis_pool node['sagecrm']['application']['sdata']['application_pool'] do
-  pool_username node['sagecrm']['application']['sdata']['pool_username']
-  pool_password node['sagecrm']['application']['sdata']['pool_password']
-  pool_identity node['sagecrm']['application']['sdata']['pool_identity']    
+  username node['sagecrm']['application']['sdata']['pool_username']
+  password node['sagecrm']['application']['sdata']['pool_password']
+  identity_type node['sagecrm']['application']['sdata']['pool_identity']    
   runtime_version '2.0'
   pipeline_mode :Integrated
   thirty_two_bit true
