@@ -3,6 +3,9 @@
 #include <ScreenCapture.au3>
 
 $WindowName = "[Title:Sage CRM setup; CLASS:#32770]"
+$errorDialogWindows = "[Title:Sage CRM 7.2.a.1]"
+$otherErrorDialogWindows = "[Title:Sage CRM; CLASS:#32770]"
+	
 Global $LicenseName = "<%= node['sagecrm']['properties']['License']['Name']  %>"
 Global $LicenseCompany = "<%= node['sagecrm']['properties']['License']['Company'] %>"
 Global $LicenseSerial = "<%= node['sagecrm']['properties']['License']['Serial'] %>"
@@ -57,283 +60,383 @@ LogToOutput("Finished installing...")
 Exit(0)
 
 Func LogToOutput($message)
-   $currentDateTime = _DateFormat(_DateTimeFormat(_NowCalc(), 1), "yyyy-MM-ddTHH:mm:ss+00:00")
-   $formattedMesage = "[" & $currentDateTime & "] INFO: " & $message & @CRLF
+	$currentDateTime = _DateFormat(_DateTimeFormat(_NowCalc(), 1), "yyyy-MM-ddTHH:mm:ss+00:00")
+	$formattedMesage = "[" & $currentDateTime & "] INFO: " & $message & @CRLF
 
-   ConsoleWrite($formattedMesage)
+	ConsoleWrite($formattedMesage)
 EndFunc
 
 Func _DateFormat($Date, $style)
-    Local $hGui = GUICreate("My GUI get date", 200, 200, 800, 200)
-    Local $idDate = GUICtrlCreateDate($Date, 10, 10, 185, 20)
-    GUICtrlSendMsg($idDate, 0x1032, 0, $style)
-    Local $sReturn = GUICtrlRead($idDate)
-    GUIDelete($hGui)
-    Return $sReturn
+	Local $hGui = GUICreate("My GUI get date", 200, 200, 800, 200)
+	Local $idDate = GUICtrlCreateDate($Date, 10, 10, 185, 20)
+	GUICtrlSendMsg($idDate, 0x1032, 0, $style)
+	Local $sReturn = GUICtrlRead($idDate)
+	GUIDelete($hGui)
+	Return $sReturn
 EndFunc
 
 Func WaitForControl($windowName, $controlId, $pollDuration)
-   LogToOutput("Waiting for control...")
-   $hCtrl = 0
-   $Waiting = True
-   $counter = 1
-   While ($Waiting)
-     If WinExists($windowName) Then
-       $hCtrl = ControlGetHandle($windowName, "", $controlId)
-       If $hCtrl Then
-         LogToOutput("Succeeded waiting for control...")
-         Return True
-       Else
-         $counter = $counter + 1
-         If $counter > 60 Then
-            LogToOutput("Failed while waiting for control...")
-         Return False
-         EndIf
-         LogToOutput("Sleep for now...")
-         Sleep($pollDuration)
-       EndIf
-     Else
-       LogToOutput("Failed while waiting for control...")
-       Return False
-     EndIf
-   WEnd
-   LogToOutput("Failed while waiting for control...")
-   Return False
+	LogToOutput("Waiting for control...")
+	$hCtrl = 0
+	$Waiting = True
+	$counter = 1
+	While ($Waiting)
+		If WinExists($windowName) Then
+			$hCtrl = ControlGetHandle($windowName, "", $controlId)
+			If $hCtrl Then
+				LogToOutput("Succeeded waiting for control...")
+				Return True
+			Else
+				$counter = $counter + 1
+				If $counter > 60 Then
+				LogToOutput("Failed while waiting for control...")
+				Return False
+			EndIf
+				LogToOutput("Sleep for now...")
+				Sleep($pollDuration)
+			EndIf
+		Else
+			LogToOutput("Failed while waiting for control...")
+			Return False
+		EndIf
+	WEnd
+	LogToOutput("Failed while waiting for control...")
+	Return False
 EndFunc
 
 Func RunInstall($windowName)
-   LogToOutput("Installing...")
+	LogToOutput("Installing...")
 
-   $PollDuration = 500
+	$PollDuration = 500
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep4.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep4.jpg")
 
-   WinWaitActive($windowName)
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep4b.jpg")
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	WinWaitActive($windowName)
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep4b.jpg")
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep5.jpg")
-   WinWaitActive($windowName)
-   ControlClick($windowName, "I accept the terms of the license agrement", 1000)
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep5.jpg")
+	WinWaitActive($windowName)
+	ControlClick($windowName, "I accept the terms of the license agrement", 1000)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep6.jpg")
 
-   WinWaitActive($windowName)
-   ;Text in fields is auto populated, so set the values after it is auto populated
-   Sleep(500)
+	WinWaitActive($windowName)
+	;Text in fields is auto populated, so set the values after it is auto populated
+	Sleep(500)
 
-   ControlSetText($windowName, "", 301, $LicenseName)
-   ControlSetText($windowName, "", 302, $LicenseCompany)
-   ControlSetText($windowName, "", 303, $LicenseSerial)
+	ControlSetText($windowName, "", 301, $LicenseName)
+	ControlSetText($windowName, "", 302, $LicenseCompany)
+	ControlSetText($windowName, "", 303, $LicenseSerial)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep7.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep7.jpg")
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep8.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep8.jpg")
 
-   WinWaitActive($windowName)
+	WinWaitActive($windowName)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep9.jpg")
 
-   WinWaitActive($windowName)
-   ;Text in fields is auto populated, so set the values after it is auto populated
-   Sleep(500)
+	WinWaitActive($windowName)
+	;Text in fields is auto populated, so set the values after it is auto populated
+	Sleep(500)
 
-   ControlSetText($windowName, "", 4, $DatabaseName)
+	ControlSetText($windowName, "", 4, $DatabaseName)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep10.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep10.jpg")
 
-   WinWaitActive($windowName)
+	WinWaitActive($windowName)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep11.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep11.jpg")
 
-   WinWaitActive($windowName)
-   ;Text in fields is auto populated, so set the values after it is auto populated
-   Sleep(500)
+	WinWaitActive($windowName)
+	;Text in fields is auto populated, so set the values after it is auto populated
+	Sleep(500)
 
-   ControlSetText($windowName, "", 1001, $DatabaseServerHost)
-   ControlSetText($windowName, "", 17827, $DatabaseServerPort)
-   ControlSetText($windowName, "", 301, $DatabaseUsername)
-   ControlSetText($windowName, "", 305, $DatabasePassword)
+	ControlSetText($windowName, "", 1001, $DatabaseServerHost)
+	ControlSetText($windowName, "", 17827, $DatabaseServerPort)
+	ControlSetText($windowName, "", 301, $DatabaseUsername)
+	ControlSetText($windowName, "", 305, $DatabasePassword)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep12.jpg")
 
-   ;We checking if there is an error connecting to the database server
-   sleep(250)
-   $errorControl = WaitForControl("Sage CRM 7.2.a.1", 65535, 10)
-   If $errorControl == True Then
-     Return False
-   EndIf
+	;We checking if there is an error connecting to the database server
+	sleep(250)
+	$errorControl = WaitForControl($errorDialogWindows, 65535, 10)
+	If $errorControl == True Then
+		Return False
+	EndIf
 
-   WinWaitActive($windowName)
-   ControlClick($windowName, "", 602)
+	WinWaitActive($windowName)
+	ControlClick($windowName, "", 602)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
 
+	WinWaitActive($windowName)
 
-   WinWaitActive($windowName)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
 
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
+	WinWaitActive($windowName)
 
-   WinWaitActive($windowName)
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
+	ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Currency)
+	WinWaitActive($windowName) ;Give it time to update text on screen
 
-   ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Currency)
-   WinWaitActive($windowName) ;Give it time to update text on screen
-
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
-
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
-
-   WinWaitActive($windowName)
-
-   ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Country)
-   WinWaitActive($windowName) ;Give it time to update text on screen
-   ControlSetText($windowName, "", 1002, $AreaCode)
-   ControlSetText($windowName, "", 1003, $OutNumber)
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
-
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
-
-   WinWaitActive($windowName)
-   if $UseHttps == True Then
-     ControlCommand($windowName, "", 1203, "Check", "")
-   Else
-     ControlCommand($windowName, "", 1203, "UnCheck", "")
-   EndIf
-
-   WinWaitActive($windowName)
-   if $UseProxy == True Then
-     ControlCommand($windowName, "", 1202, "Check", "")
-
-     WinWaitActive($windowName)
-     ControlSetText($windowName, "", 1001, $ProxyServer )
-     ControlSetText($windowName, "", 1003, $ProxyServer )
-     ControlSetText($windowName, "", 1005, $ProxyDomain )
-     ControlSetText($windowName, "", 1007, $ProxyUser )
-     ControlSetText($windowName, "", 1009, $ProxyPassword )
-
-   Else
-     ControlCommand($windowName, "", 1202, "UnCheck", "")
-  EndIf
-
-  _ScreenCapture_Capture($WorkingDirectory & "\InstallStep16.jpg")
-
-   WinWaitActive($windowName)
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
-
-   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep17.jpg")
-
-   WinWaitActive($windowName)
-   LogToOutput("Click next")
-   ControlClick($windowName, "Next", 1)
-
-   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep18.jpg")
-
-   $waiting = True
-   $counter = 1
-   $errorDialogWindows = "Sage CRM 7.2.a.1"
-
-   While ($waiting)
-     If WinExists($errorDialogWindows) Then
-       $unableToConnectToDatabase = ControlGetHandle($errorDialogWindows, "", 6)
-       $shouldStopIIS = ControlGetHandle($errorDialogWindows, "", 6)
-       If $shouldStopIIS Then
-         WinActivate($errorDialogWindows)
-         WinActive($errorDialogWindows)
-         WinWaitActive($errorDialogWindows)
-
-     _ScreenCapture_Capture($WorkingDirectory & "\InstallStep19.jpg")
-
-         LogToOutput("Click Yes")
-         ControlClick($errorDialogWindows, "", 6)
-       EndIf
-
-       $urlRewriterHeadache = ControlGetHandle($errorDialogWindows, "", 2)
-       if $urlRewriterHeadache Then
-         WinActivate($errorDialogWindows)
-         WinActive($errorDialogWindows)
-         WinWaitActive($errorDialogWindows)
-
-     _ScreenCapture_Capture($WorkingDirectory & "\InstallStep20.jpg")
-
-         LogToOutput("Click Yes")
-         ControlClick($errorDialogWindows, "", 2)
-       EndIf
-     EndIf
-
-     If WinExists($windowName) Then
-       $installationCompleted = ControlGetHandle($windowName, "", 1312)
-       If $installationCompleted Then
-         $waiting = False
-       EndIf
-     EndIf
-
-     $counter = $counter + 1
-     If $counter > 1200 Then
-       $waiting = False
-     EndIf
-     Sleep(500)
-   WEnd
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
-
-   WinActivate($windowName)
-   WinActive($windowName)
-
-   ControlSetText($windowName, "", 1312, $CompanyContact )
-   ControlSetText($windowName, "", 1314, $CompanyEmail )
-   ControlSetText($windowName, "", 1318, $CompanyPhone )
-
-   ControlSetText($windowName, "", 1321, $BPName )
-   ControlSetText($windowName, "", 1323, $BPContact )
-   ControlSetText($windowName, "", 1325, $BPEmail )
-   ControlSetText($windowName, "", 1329, $BPPhone )
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
-
-   LogToOutput("Click next")
-   ControlClick($windowName, "", 1)
-
-   WinWaitActive($windowName)
-
-   ControlCommand($windowName, "", 501, "UnCheck", "")
-   ControlCommand($windowName, "", 502, "UnCheck", "")
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep23.jpg")
-
-   LogToOutput("Click next")
-   ControlClick($windowName, "", 1)
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep24.jpg")
-
-   Return True
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
+
+	WinWaitActive($windowName)
+
+	ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Country)
+	WinWaitActive($windowName) ;Give it time to update text on screen
+	ControlSetText($windowName, "", 1002, $AreaCode)
+	ControlSetText($windowName, "", 1003, $OutNumber)
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep15.jpg")
+
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
+
+	WinWaitActive($windowName)
+	if $UseHttps == True Then
+		ControlCommand($windowName, "", 1203, "Check", "")
+	Else
+		ControlCommand($windowName, "", 1203, "UnCheck", "")
+	EndIf
+
+	WinWaitActive($windowName)
+	if $UseProxy == True Then
+		ControlCommand($windowName, "", 1202, "Check", "")
+
+		WinWaitActive($windowName)
+		ControlSetText($windowName, "", 1001, $ProxyServer )
+		ControlSetText($windowName, "", 1003, $ProxyServer )
+		ControlSetText($windowName, "", 1005, $ProxyDomain )
+		ControlSetText($windowName, "", 1007, $ProxyUser )
+		ControlSetText($windowName, "", 1009, $ProxyPassword )
+	Else
+		ControlCommand($windowName, "", 1202, "UnCheck", "")
+	EndIf
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep16.jpg")
+
+	WinWaitActive($windowName)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep17.jpg")
+
+	WinWaitActive($windowName)
+	LogToOutput("Click next")
+	ControlClick($windowName, "Next", 1)
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep18.jpg")
+
+	If WinExists($windowName) Then
+		$next = ControlGetHandle($windowName, "", 1)
+		If $next Then
+			LogToOutput("Click next")
+			ControlClick($windowName, "Next", 1)
+
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep18a.jpg")
+		EndIf
+	EndIf   
+   
+	$waiting = True
+	$counter = 1
+
+
+	While ($waiting)
+		If WinExists($errorDialogWindows) Then
+			$unableToConnectToDatabase = ControlGetHandle($errorDialogWindows, "", 6)
+			$shouldStopIIS = ControlGetHandle($errorDialogWindows, "", 6)
+			If $shouldStopIIS Then
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19a1.jpg")
+				
+				WinActivate($errorDialogWindows)
+				WinActive($errorDialogWindows)
+				WinWaitActive($errorDialogWindows)
+
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19a2.jpg")
+
+				LogToOutput("Click Yes")
+				ControlClick($errorDialogWindows, "", 6)
+				
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19a3.jpg")
+				
+				If WinExists($windowName) Then
+					WinActivate($windowName)
+					WinActive($windowName)
+					WinWaitActive($windowName)	
+				EndIf
+
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19a4.jpg")				
+			EndIf
+
+			$urlRewriterHeadache = ControlGetHandle($errorDialogWindows, "", 2)
+			if $urlRewriterHeadache Then
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19b1.jpg")
+				
+				WinActivate($errorDialogWindows)
+				WinActive($errorDialogWindows)
+				WinWaitActive($errorDialogWindows)
+
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19b2.jpg")
+
+				LogToOutput("Click Yes")
+				ControlClick($errorDialogWindows, "", 2)
+				
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19b3.jpg")
+				
+				If WinExists($windowName) Then
+					WinActivate($windowName)
+					WinActive($windowName)
+					WinWaitActive($windowName)		
+				EndIf
+				
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19b4.jpg")
+			EndIf
+		EndIf
+
+		If WinExists($otherErrorDialogWindows) Then
+			$SageMailerHeadache = ControlGetHandle($otherErrorDialogWindows, "", "[CLASS:Button; TEXT:&Close program; INSTANCE:2]")
+			if $SageMailerHeadache Then
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19c1.jpg")
+				
+				WinActivate($otherErrorDialogWindows)
+				WinActive($otherErrorDialogWindows)
+				WinWaitActive($otherErrorDialogWindows)
+				
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19c2.jpg")
+				
+				LogToOutput("Click Close Program")
+				ControlClick($otherErrorDialogWindows, "", "[CLASS:Button; TEXT:&Close program; INSTANCE:2]")
+				
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19c3.jpg")
+				
+				If WinExists($windowName) Then
+					WinActivate($windowName)
+					WinActive($windowName)
+					WinWaitActive($windowName)
+				EndIf
+				
+				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19c4.jpg")
+			EndIf	 
+		EndIf
+
+		$installationCompleted = ControlGetHandle($windowName, "", 1312)
+		If $installationCompleted Then
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19d1.jpg")
+			$waiting = False
+		EndIf
+		
+		$installationCompleted = ControlGetHandle($windowName, "", "[CLASS:Button; TEXT:Finish; INSTANCE:4]")
+		If $installationCompleted Then
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep19d2.jpg")
+			$waiting = False
+		EndIf		
+
+		$counter = $counter + 1
+		If $counter > 1200 Then
+			$waiting = False
+		EndIf
+		Sleep(500)
+	WEnd
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep20a.jpg")
+
+	If WinExists($windowName) Then
+		WinActivate($windowName)
+		WinActive($windowName)
+		WinWaitActive($windowName)
+	EndIf
+	
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep20b.jpg")
+   
+	If WinExists($otherErrorDialogWindows) Then
+		$SageMailerHeadache = ControlGetHandle($otherErrorDialogWindows, "", "[CLASS:Button; INSTANCE:2]")
+		if $SageMailerHeadache Then
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep20c1.jpg")
+			
+			WinActivate($otherErrorDialogWindows)
+			WinActive($otherErrorDialogWindows)
+			WinWaitActive($otherErrorDialogWindows)
+			
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep20c2.jpg")
+			
+			LogToOutput("Click Close Program")
+			ControlClick($otherErrorDialogWindows, "", "[CLASS:Button; INSTANCE:2]")
+			
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep20c3.jpg")
+			
+			If WinExists($windowName) Then
+				WinActivate($windowName)
+				WinActive($windowName)
+				WinWaitActive($windowName)
+			EndIf
+			
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep20c4.jpg")
+		EndIf	 
+	EndIf
+
+	ControlSetText($windowName, "", 1312, $CompanyContact )
+	ControlSetText($windowName, "", 1314, $CompanyEmail )
+	ControlSetText($windowName, "", 1318, $CompanyPhone )
+
+	ControlSetText($windowName, "", 1321, $BPName )
+	ControlSetText($windowName, "", 1323, $BPContact )
+	ControlSetText($windowName, "", 1325, $BPEmail )
+	ControlSetText($windowName, "", 1329, $BPPhone )
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
+
+	LogToOutput("Click next")
+	ControlClick($windowName, "", 1)
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep22a.jpg")
+
+	If WinExists($windowName) Then
+		WinActivate($windowName)
+		WinActive($windowName)
+		WinWaitActive($windowName)   
+	EndIf
+	
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep24.jpg")
+	ControlCommand($windowName, "", 501, "UnCheck", "")
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep25.jpg")
+	ControlCommand($windowName, "", 502, "UnCheck", "")
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep26.jpg")
+
+	LogToOutput("Click next")
+	ControlClick($windowName, "", 1)
+
+	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep27.jpg")
+
+	Return True
 EndFunc
