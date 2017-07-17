@@ -7,6 +7,54 @@
 # All rights reserved - Do Not Redistribute
 #
 
+include_recipe 'iis'
+
+service 'CRMEscalationService' do
+	service_name 'CRMEscalationService'
+	action :nothing
+end
+
+service 'CRMIndexerService' do
+	service_name 'CRMIndexerService'
+	action :nothing
+end
+
+service 'CRMIntegrationService' do
+	service_name 'CRMIntegrationService'
+	action :nothing
+end
+
+service 'CRMTomcat7' do
+	service_name 'CRMTomcat7'
+	action :nothing
+end
+
+log 'Restart IIS for Sage CRM' do
+  level :info
+  action :nothing
+  notifies :restart, 'service[iis]'
+end
+
+log 'Stop Sage CRM IIS dependancies' do
+  level :info
+  subscribes :write, 'service[iis]', :before
+  notifies :stop, 'service[CRMEscalationService]', :before
+  notifies :stop, 'service[CRMIndexerService]', :before
+  notifies :stop, 'service[CRMIntegrationService]', :before
+  notifies :stop, 'service[CRMTomcat7]', :before
+  action :nothing
+end
+
+log 'Start Sage CRM IIS dependancies' do
+  level :info
+  subscribes :write, 'service[iis]', :immediately
+  notifies :start, 'service[CRMTomcat7]', :immediately
+  notifies :start, 'service[CRMIntegrationService]', :immediately
+  notifies :start, 'service[CRMIndexerService]', :immediately
+  notifies :start, 'service[CRMEscalationService]', :immediately
+  action :nothing
+end
+
 template "#{node['sagecrm']['application']['sdata']['physical_path']}\\web.config" do
   source 'web.config.erb'
 end
@@ -85,25 +133,21 @@ end
 
 iis_config "/section:system.webServer/asp /enableParentPaths:\"True\" /commit:apphost" do
   action :set
-  notifies :run, 'execute[IISRESET]'
+  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
 iis_config "/section:system.webServer/asp /scriptErrorSentToBrowser:\"True\" /commit:apphost" do
   action :set
-  notifies :run, 'execute[IISRESET]'
+  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
 iis_config "/section:anonymousAuthentication /username:\"\" --password" do
   action :set
-  notifies :run, 'execute[IISRESET]'
+  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
 iis_config "/section:handlers /accessPolicy:Read,Script,Execute" do
   action :set
-  notifies :run, 'execute[IISRESET]'
+  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
-execute 'IISRESET' do
-  command 'IISRESET /noforce /timeout:180'
-  action :nothing
-end
