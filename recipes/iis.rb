@@ -122,8 +122,8 @@ else
   app_pool = node['sagecrm']['application']['sdata']['pool_username']
 end
 
-set_permissions_for_crm = "icacls \"#{node['sagecrm']['instance']['install_dir']}\\#{node['sagecrm']['application']['crm']['name']}\" /t /grant \"#{app_pool}\":(OI)(CI)F"
-set_permissions_for_services = "icacls \"#{node['sagecrm']['instance']['install_dir']}\\Services\" /t /grant \"#{app_pool}\":(OI)(CI)F"
+set_permissions_for_crm = "icacls \"#{node['sagecrm']['instance']['install_dir']}\\#{node['sagecrm']['application']['crm']['name']}\" /t /grant \"#{app_pool}\":(OI)(CI)F /Q"
+set_permissions_for_services = "icacls \"#{node['sagecrm']['instance']['install_dir']}\\Services\" /t /grant \"#{app_pool}\":(OI)(CI)F /Q"
 
 execute set_permissions_for_crm do
 end 
