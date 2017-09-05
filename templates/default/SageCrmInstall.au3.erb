@@ -438,5 +438,9 @@ Func RunInstall($windowName)
 
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep27.jpg")
 
+	WinWaitClose($windowName, "", 30)
+
+	RunWait('taskkill /F /IM "iexplore.exe"')
+
 	Return True
 EndFunc
