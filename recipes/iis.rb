@@ -10,22 +10,37 @@
 include_recipe 'iis'
 
 service 'CRMEscalationService' do
+	guard_interpreter :powershell_script
 	service_name 'CRMEscalationService'
+	only_if "(get-service | ?{$_.Name -eq  'CRMEscalationService'}).Length -gt 0"
 	action :nothing
 end
 
 service 'CRMIndexerService' do
+	guard_interpreter :powershell_script
 	service_name 'CRMIndexerService'
+	only_if "(get-service | ?{$_.Name -eq  'CRMIndexerService'}).Length -gt 0"
 	action :nothing
 end
 
 service 'CRMIntegrationService' do
+	guard_interpreter :powershell_script
 	service_name 'CRMIntegrationService'
+	only_if "(get-service | ?{$_.Name -eq  'CRMIntegrationService'}).Length -gt 0"
+	action :nothing
+end
+
+service 'SageCRMQuickFindService' do
+	guard_interpreter :powershell_script
+	service_name 'SageCRMQuickFindService'
+	only_if "(get-service | ?{$_.Name -eq  'SageCRMQuickFindService'}).Length -gt 0"
 	action :nothing
 end
 
 service 'CRMTomcat7' do
+	guard_interpreter :powershell_script
 	service_name 'CRMTomcat7'
+	only_if "(get-service | ?{$_.Name -eq  'CRMTomcat7'}).Length -gt 0"
 	action :nothing
 end
 
@@ -41,6 +56,7 @@ log 'Stop Sage CRM IIS dependancies' do
   notifies :stop, 'service[CRMEscalationService]', :before
   notifies :stop, 'service[CRMIndexerService]', :before
   notifies :stop, 'service[CRMIntegrationService]', :before
+  notifies :stop, 'service[SageCRMQuickFindService]', :before
   notifies :stop, 'service[CRMTomcat7]', :before
   action :nothing
 end
@@ -49,6 +65,7 @@ log 'Start Sage CRM IIS dependancies' do
   level :info
   subscribes :write, 'service[iis]', :immediately
   notifies :start, 'service[CRMTomcat7]', :immediately
+  notifies :start, 'service[SageCRMQuickFindService]', :immediately
   notifies :start, 'service[CRMIntegrationService]', :immediately
   notifies :start, 'service[CRMIndexerService]', :immediately
   notifies :start, 'service[CRMEscalationService]', :immediately
