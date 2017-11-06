@@ -93,7 +93,7 @@ execute "Check syntax #{win_friendly_sagecrm_install_script_path} with AutoIt" d
 end
 
 execute "Compile #{win_friendly_sagecrm_install_script_path} with AutoIt" do
-  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\""
+  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\" /console"
   not_if {sagecrm_installed}
 end
 
