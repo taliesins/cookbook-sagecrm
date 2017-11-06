@@ -135,8 +135,12 @@ Func RunInstall($windowName)
 	   Exit(1)
     EndIf
 
-	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep3.jpg")
-	ControlClick($windowName, "I accept the terms of the license agrement", 1000)
+	If WaitForControl($windowName, "", "[CLASS:Button; TEXT:I &accept the terms of the license agreement]", 250, 120) == False Then
+		_ScreenCapture_Capture($WorkingDirectory & "\InstallStep3b.jpg")
+		LogToOutput("Unable to find [CLASS:Button; TEXT:I &accept the terms of the license agreement]")
+		Exit(1)
+	EndIf
+	ControlCommand($windowName, "", "[CLASS:Button; TEXT:I &accept the terms of the license agreement]", "Check")
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep4.jpg")
 	LogToOutput("Click next")
