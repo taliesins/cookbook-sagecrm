@@ -93,7 +93,7 @@ execute "Check syntax #{win_friendly_sagecrm_install_script_path} with AutoIt" d
 end
 
 execute "Compile #{win_friendly_sagecrm_install_script_path} with AutoIt" do
-  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\" /console"
+  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\" "
   not_if {sagecrm_installed}
 end
 
@@ -122,7 +122,31 @@ $command = '#{win_friendly_sagecrm_install_exe_path}'
 $psexecPath = '#{win_friendly_psexec_path}'
 $rdpplusPath = '#{win_friendly_rdpplus_path}'
 
-Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
+$ErrorActionPreference = "Stop"  
+
+#We are unable to run the installer in a way that will allow it to start sage crm services in interactive mode. If the services exist that means the install is complete.
+$result = Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
+$sageCrmServices = get-service | ?{$_.Name -eq 'SageCRMQuickFindService' -or $_.Name -eq 'CRMIntegrationService' -or $_.Name -eq 'CRMIndexerService' -or $_.Name -eq 'CRMEscalationService'}
+
+if ($sageCrmServices) {
+	$sageCrmServices | stop-service
+	if ($result.StandardOutput){
+		Write-Output $result.StandardOutput
+	}
+	if ($result.ErrorOutput){
+		Write-Output $result.ErrorOutput
+	}	
+	exit 0
+} else {
+	if ($result.StandardOutput){
+		Write-Output $result.StandardOutput
+	}
+	if ($result.ErrorOutput){
+		Write-Error $result.ErrorOutput
+	}	
+	exit $result.ExitCode
+}
+
 EOH1
     action :run
     not_if {sagecrm_installed}
