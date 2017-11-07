@@ -1,3 +1,4 @@
+#include <AutoItConstants.au3>
 #include <Date.au3>
 #RequireAdmin
 #include <ScreenCapture.au3>
@@ -43,9 +44,13 @@ Global $BPPhone = "<%= node['sagecrm']['properties']['Registration']['BPPhone'] 
 
 $WorkingDirectory = "<%= @WorkingDirectory %>"
 
+$Command = $WorkingDirectory & "\setup.exe /L0x0409 SageCRMstd"
+
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
 
-Run($WorkingDirectory & "\setup.exe /L0x0409 SageCRMstd", $WorkingDirectory)
+$opt_flag = $STDIN_CHILD + $STDOUT_CHILD + $STDERR_CHILD
+
+$PID = Run($Command, $WorkingDirectory, @SW_MAXIMIZE, $opt_flag)
 
 Sleep(1000)
 If WinActive($errorInstallShieldWindow) Then
