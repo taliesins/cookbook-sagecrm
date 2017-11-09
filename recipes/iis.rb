@@ -12,35 +12,35 @@ include_recipe 'iis'
 service 'CRMEscalationService' do
 	guard_interpreter :powershell_script
 	service_name 'CRMEscalationService'
-	only_if "(get-service | ?{$_.Name -eq  'CRMEscalationService'}).Length -gt 0"
+	only_if "(get-service | ?{$_.Name -eq 'CRMEscalationService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
 	action :nothing
 end
 
 service 'CRMIndexerService' do
 	guard_interpreter :powershell_script
 	service_name 'CRMIndexerService'
-	only_if "(get-service | ?{$_.Name -eq  'CRMIndexerService'}).Length -gt 0"
+	only_if "(get-service | ?{$_.Name -eq 'CRMIndexerService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
 	action :nothing
 end
 
 service 'CRMIntegrationService' do
 	guard_interpreter :powershell_script
 	service_name 'CRMIntegrationService'
-	only_if "(get-service | ?{$_.Name -eq  'CRMIntegrationService'}).Length -gt 0"
+	only_if "(get-service | ?{$_.Name -eq 'CRMIntegrationService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
 	action :nothing
 end
 
 service 'SageCRMQuickFindService' do
 	guard_interpreter :powershell_script
 	service_name 'SageCRMQuickFindService'
-	only_if "(get-service | ?{$_.Name -eq  'SageCRMQuickFindService'}).Length -gt 0"
+	only_if "(get-service | ?{$_.Name -eq 'SageCRMQuickFindService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
 	action :nothing
 end
 
 service 'CRMTomcat7' do
 	guard_interpreter :powershell_script
 	service_name 'CRMTomcat7'
-	only_if "(get-service | ?{$_.Name -eq  'CRMTomcat7'}).Length -gt 0"
+	only_if "(get-service | ?{$_.Name -eq 'CRMTomcat7' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
 	action :nothing
 end
 
