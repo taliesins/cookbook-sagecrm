@@ -9,39 +9,13 @@
 
 include_recipe 'iis'
 
-service 'CRMEscalationService' do
-	guard_interpreter :powershell_script
-	service_name 'CRMEscalationService'
-	only_if "(get-service | ?{$_.Name -eq 'CRMEscalationService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
-	action :nothing
-end
-
-service 'CRMIndexerService' do
-	guard_interpreter :powershell_script
-	service_name 'CRMIndexerService'
-	only_if "(get-service | ?{$_.Name -eq 'CRMIndexerService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
-	action :nothing
-end
-
-service 'CRMIntegrationService' do
-	guard_interpreter :powershell_script
-	service_name 'CRMIntegrationService'
-	only_if "(get-service | ?{$_.Name -eq 'CRMIntegrationService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
-	action :nothing
-end
-
-service 'SageCRMQuickFindService' do
-	guard_interpreter :powershell_script
-	service_name 'SageCRMQuickFindService'
-	only_if "(get-service | ?{$_.Name -eq 'SageCRMQuickFindService' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
-	action :nothing
-end
-
-service 'CRMTomcat7' do
-	guard_interpreter :powershell_script
-	service_name 'CRMTomcat7'
-	only_if "(get-service | ?{$_.Name -eq 'CRMTomcat7' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
-	action :nothing
+%w(CRMEscalationService CRMIndexerService CRMIntegrationService SageCRMQuickFindService CRMTomcat7).each do |service_name|
+  service service_name do
+    guard_interpreter :powershell_script
+    service_name service_name
+    only_if "(get-service | ?{$_.Name -eq '#{service_name}' -and $_.StartType -ne 'Disabled'}).Length -gt 0"
+    action :nothing
+  end
 end
 
 log 'Restart IIS for Sage CRM' do
@@ -167,4 +141,3 @@ iis_config "/section:handlers /accessPolicy:Read,Script,Execute" do
   action :set
   notifies :write, 'log[Restart IIS for Sage CRM]'
 end
-

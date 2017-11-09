@@ -143,3 +143,22 @@ default['sagecrm']['application']['sdata']['path'] = '/sdata'
 default['sagecrm']['application']['sdata']['physical_path'] = "#{node['sagecrm']['instance']['install_dir']}Services\\IISUtils\\CRMRewriter"
 default['sagecrm']['application']['sdata']['enabled_protocols'] = 'http'
 
+default['sagecrm']['services']['CRMEscalationService']['startup'] = :manual
+default['sagecrm']['services']['CRMEscalationService']['run_as_user'] = node['sagecrm']['service']['account']
+default['sagecrm']['services']['CRMEscalationService']['run_as_password'] = node['sagecrm']['service']['password']
+
+default['sagecrm']['services']['CRMIndexerService']['startup'] = :automatic
+default['sagecrm']['services']['CRMIndexerService']['run_as_user'] = node['sagecrm']['service']['account']
+default['sagecrm']['services']['CRMIndexerService']['run_as_password'] = node['sagecrm']['service']['password']
+
+default['sagecrm']['services']['CRMIntegrationService']['startup'] = :manual
+default['sagecrm']['services']['CRMIntegrationService']['run_as_user'] = node['sagecrm']['service']['account']
+default['sagecrm']['services']['CRMIntegrationService']['run_as_password'] = node['sagecrm']['service']['password']
+
+default['sagecrm']['services']['SageCRMQuickFindService']['startup'] = :automatic
+default['sagecrm']['services']['SageCRMQuickFindService']['run_as_user'] = node['sagecrm']['service']['account']
+default['sagecrm']['services']['SageCRMQuickFindService']['run_as_password'] = node['sagecrm']['service']['password']
+
+default['sagecrm']['services']['CRMTomcat7']['startup'] = :automatic
+default['sagecrm']['services']['CRMTomcat7']['run_as_user'] = node['sagecrm']['service']['account']
+default['sagecrm']['services']['CRMTomcat7']['run_as_password'] = node['sagecrm']['service']['password']
