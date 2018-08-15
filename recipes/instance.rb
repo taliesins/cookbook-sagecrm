@@ -125,7 +125,7 @@ $rdpplusPath = '#{win_friendly_rdpplus_path}'
 $ErrorActionPreference = "Stop"  
 
 #We are unable to run the installer in a way that will allow it to start sage crm services in interactive mode. If the services exist that means the install is complete.
-$result = Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
+$result = Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20
 $sageCrmServices = get-service | ?{$_.Name -eq 'SageCRMQuickFindService' -or $_.Name -eq 'CRMIntegrationService' -or $_.Name -eq 'CRMIndexerService' -or $_.Name -eq 'CRMEscalationService'}
 
 if ($sageCrmServices) {
