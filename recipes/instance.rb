@@ -114,6 +114,7 @@ win_friendly_powershell_helper_path = win_friendly_path(File.join(node['autoit']
 
 powershell_script 'Install-SageCrm' do
     code <<-EOH1
+$VerbosePreference = 'Continue'
 . "#{win_friendly_powershell_helper_path}"
 
 $username = '#{node['sagecrm']['installaccount']['account']}'
