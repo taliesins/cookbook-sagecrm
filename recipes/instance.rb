@@ -126,7 +126,8 @@ $rdpplusPath = '#{win_friendly_rdpplus_path}'
 $ErrorActionPreference = "Stop"  
 
 #We are unable to run the installer in a way that will allow it to start sage crm services in interactive mode. If the services exist that means the install is complete.
-Write-Verbose "Screenshots from installer steps should be available in #{win_friendly_installation_directory}"
+$ScreenshotsDirectory='#{win_friendly_installation_directory}'
+Write-Verbose "Screenshots from installer steps should be available in $ScreenshotsDirectory"
 Write-Verbose "Running: Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20"
 $result = Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20
 
@@ -144,7 +145,7 @@ if ($sageCrmServices) {
 	exit 0
 } else {
 	throw [PsCustomObject]@{
-			Message = "Sage services not found, so concluding that running of the installer didn't install Sage correctly."
+			Message = "Sage services not found, so concluding that running of the installer didn't install Sage correctly. Screenshots from installer steps should be available in $ScreenshotsDirectory."
 			CommandInvokeResult = $result | ConvertTo-Json <# Need to serialize here because only 1st level of object gets serialized to output #>
 		}
 }
