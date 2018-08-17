@@ -46,7 +46,7 @@ $WorkingDirectory = "<%= @WorkingDirectory %>"
 
 $Command = $WorkingDirectory & "\setup.exe /L0x0409 SageCRMstd"
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep0.jpg")
 
 $opt_flag = $STDIN_CHILD + $STDOUT_CHILD + $STDERR_CHILD
 
@@ -63,7 +63,7 @@ EndIf
 
 WinActivate($WindowName)
 
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep2.jpg")
+_ScreenCapture_Capture($WorkingDirectory & "\InstallStep0a.jpg")
 
 WinActive($WindowName)
 
