@@ -145,7 +145,7 @@ if ($sageCrmServices) {
 		Write-Output $result.StandardOutput
 	}
 	if ($result.ErrorOutput){
-		Write-Error $result.ErrorOutput
+		Write-Error -ErrorAction Continue $result.ErrorOutput
 	}	
 	exit $result.ExitCode
 }
