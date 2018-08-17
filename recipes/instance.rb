@@ -143,10 +143,10 @@ if ($sageCrmServices) {
 	}
 	exit 0
 } else {
-	if ($result.ErrorOutput){
-		Write-Error -ErrorAction Continue "ErrorOutput: $($result.ErrorOutput)"
-	}	
-	exit $result.ExitCode
+	throw [PsCustomObject]@{
+			Message = "Sage services not found, so concluding that running of the installer didn't install Sage correctly."
+			CommandInvokeResult = $result | ConvertTo-Json <# Need to serialize here because only 1st level of object gets serialized to output #>
+		}
 }
 
 EOH1
