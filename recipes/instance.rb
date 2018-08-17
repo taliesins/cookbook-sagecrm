@@ -129,23 +129,22 @@ $ErrorActionPreference = "Stop"
 Write-Verbose "Screenshots from installer steps should be available in #{win_friendly_installation_directory}"
 Write-Verbose "Running: Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20"
 $result = Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20
+
+if ($result.StandardOutput){
+	Write-Verbose "StandardOutput: $($result.StandardOutput)"
+}
+
 $sageCrmServices = get-service | ?{$_.Name -eq 'SageCRMQuickFindService' -or $_.Name -eq 'CRMIntegrationService' -or $_.Name -eq 'CRMIndexerService' -or $_.Name -eq 'CRMEscalationService'}
 
 if ($sageCrmServices) {
 	$sageCrmServices | stop-service
-	if ($result.StandardOutput){
-		Write-Output $result.StandardOutput
-	}
 	if ($result.ErrorOutput){
-		Write-Output $result.ErrorOutput
-	}	
+		Write-Verbose "ErrorOutput: $($result.ErrorOutput)"
+	}
 	exit 0
 } else {
-	if ($result.StandardOutput){
-		Write-Output $result.StandardOutput
-	}
 	if ($result.ErrorOutput){
-		Write-Error -ErrorAction Continue $result.ErrorOutput
+		Write-Error -ErrorAction Continue "ErrorOutput: $($result.ErrorOutput)"
 	}	
 	exit $result.ExitCode
 }
