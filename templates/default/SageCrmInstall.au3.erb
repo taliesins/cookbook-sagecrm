@@ -61,13 +61,12 @@ If WinActive($errorInstallShieldWindow) Then
    Exit(1)
 EndIf
 
-WinActivate($WindowName)
+If Not WaitForWindowAndActivate($WindowName, "") Then
+   LogToOutput("Exiting, because could not find or activate window " & $WindowName)
+   Exit(2)
+EndIf
 
 _ScreenCapture_Capture($WorkingDirectory & "\InstallStep0a.jpg")
-
-WinActive($WindowName)
-
-_ScreenCapture_Capture($WorkingDirectory & "\InstallStep0b.jpg")
 
 RunInstall($WindowName)
 
@@ -90,6 +89,26 @@ Func _DateFormat($Date, $style)
 	GUIDelete($hGui)
 	Return $sReturn
 EndFunc
+
+Func WaitForWindowAndActivate($windowName, $text, $timeoutSeconds = 0)
+
+	LogToOutput("Awaiting window " & $WindowName & " for " & $timeoutSeconds & "s")
+	If WinWait($WindowName, "", Ceiling($timeoutSeconds)) Then ; Need Ceiling, because WinWait treats 0.5 as 0, which is 'wait forever'
+		LogToOutput("Found window " & $WindowName)
+	Else
+		LogToOutput("Din't find window " & $WindowName)
+	EndIf
+	
+	LogToOutput("Activating window " & $WindowName)
+	If WinActivate($WindowName) Then
+		LogToOutput("Activated window " & $WindowName)
+		Return True
+	Else
+		LogToOutput("Din't activate window " & $WindowName)
+		Return False
+	EndIf
+EndFunc
+
 
 Func WaitForControl($windowName, $text, $controlId, $timeoutSeconds = 0, $pollDurationMs = 250)
    LogToOutput("Waiting for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
@@ -124,15 +143,11 @@ Func RunInstall($windowName)
 
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
 
-   LogToOutput("Running: WinActivate($windowName)")
-   WinActivate($windowName)
-   LogToOutput("Running: WinActive($windowName)")
-   WinActive($windowName)
-   LogToOutput("Running: WinWaitActive($windowName)")
-   WinWaitActive($windowName)
-   LogToOutput("Finished: WinWaitActive($windowName)")
+	If Not WaitForWindowAndActivate($WindowName, "") Then
+		LogToOutput("Exiting, because could not find or activate window " & $WindowName)
+		Exit(2)
+	EndIf
 
-	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep2.jpg")
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
