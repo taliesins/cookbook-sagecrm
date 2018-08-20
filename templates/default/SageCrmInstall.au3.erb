@@ -126,9 +126,13 @@ Func RunInstall($windowName)
 
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
 
+   LogToOutput("Running: WinActivate($windowName)")
    WinActivate($windowName)
+   LogToOutput("Running: WinActive($windowName)")
    WinActive($windowName)
+   LogToOutput("Running: WinWaitActive($windowName)")
    WinWaitActive($windowName)
+   LogToOutput("Finished: WinWaitActive($windowName)")
 
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep2.jpg")
 	LogToOutput("Click next")
