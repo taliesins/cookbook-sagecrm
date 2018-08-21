@@ -96,7 +96,7 @@ Func WaitForControl($windowName, $text, $controlId, $pollDuration, $numberOfRetr
    Local $hCtrl = 0
    Local $counter = 1
    While (True)
-	  If WinExists($windowName) Then
+	  If WinExists($windowName, $text) Then
 		 $hCtrl = ControlGetHandle($windowName, $text, $controlId)
 		 If $hCtrl Then
 			LogToOutput("Found control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
