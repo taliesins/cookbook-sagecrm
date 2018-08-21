@@ -118,15 +118,12 @@ Func WaitForControl($windowName, $text, $controlId, $timeoutSeconds = 0, $pollDu
    Local $hCtrl = 0
 
    Do
-	  If WinExists($windowName, $text) Then
+	  If WaitForWindowAndActivate($windowName, $text, (($timeoutMs - $timeElapsedMs)/1000)) Then
 		 $hCtrl = ControlGetHandle($windowName, $text, $controlId)
 		 If $hCtrl Then
 			LogToOutput("Found control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
 			Return True
 		 EndIf
-	  Else
-		 LogToOutput("Failed while waiting for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"') as Window '"&$windowName&"' does not exist...")
-		 Return False
 	  EndIf
 	  $timeElapsedMs = TimerDiff($startTime)
       LogToOutput("Sleeping "&$pollDurationMs&"ms to wait for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')" & (($timeoutMs - $timeElapsedMs)/1000) & "s to give up...")
