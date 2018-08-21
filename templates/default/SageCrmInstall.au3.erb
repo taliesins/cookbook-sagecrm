@@ -61,7 +61,7 @@ If WinActive($errorInstallShieldWindow) Then
    Exit(1)
 EndIf
 
-If Not WaitForWindowAndActivate($WindowName, "") Then
+If Not WaitForWindowAndActivate($WindowName, "", 60) Then
    LogToOutput("Exiting, because could not find or activate window " & $WindowName)
    Exit(2)
 EndIf
@@ -143,7 +143,7 @@ Func RunInstall($windowName)
 
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep1.jpg")
 
-	If Not WaitForWindowAndActivate($WindowName, "") Then
+	If Not WaitForWindowAndActivate($WindowName, "", 10) Then
 		LogToOutput("Exiting, because could not find or activate window " & $WindowName)
 		Exit(2)
 	EndIf
