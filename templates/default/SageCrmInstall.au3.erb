@@ -91,31 +91,29 @@ Func _DateFormat($Date, $style)
 	Return $sReturn
 EndFunc
 
-Func WaitForControl($windowName, $text, $controlId, $pollDuration, $numberOfRetries)
+Func WaitForControl($windowName, $text, $controlId, $timeoutSeconds = 0, $pollDurationMs = 250)
    LogToOutput("Waiting for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
+   Local $timeoutMs = $timeoutSeconds * 1000
+   Local $timeElapsedMs = 0
+   Local $startTime = TimerInit()
    Local $hCtrl = 0
-   Local $counter = 1
-   While (True)
+
+   Do
 	  If WinExists($windowName, $text) Then
 		 $hCtrl = ControlGetHandle($windowName, $text, $controlId)
 		 If $hCtrl Then
 			LogToOutput("Found control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
 			Return True
-		 Else
-			$counter = $counter + 1
-			If $counter > $numberOfRetries Then
-			   LogToOutput("Failed while waiting for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
-			   Return False
-			EndIf
-			LogToOutput("Sleep for now...")
-			Sleep($pollDuration)
 		 EndIf
 	  Else
 		 LogToOutput("Failed while waiting for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"') as Window '"&$windowName&"' does not exist...")
 		 Return False
 	  EndIf
-   WEnd
-   LogToOutput("Failed while waiting for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
+	  $timeElapsedMs = TimerDiff($startTime)
+      LogToOutput("Sleeping "&$pollDurationMs&"ms to wait for control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')" & (($timeoutMs - $timeElapsedMs)/1000) & "s to give up...")
+      Sleep($pollDurationMs)
+   Until $timeElapsedMs > $timeoutMs
+   LogToOutput("Giving up waiting after "&$timeElapsedMs&"ms control ('"&$windowName&"', '"&$text&"', '"&$controlId&"')...")
    Return False
 EndFunc
 
@@ -138,13 +136,13 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	If WaitForControl($windowName, "", "[TEXT:License Agreement]", 250, 120) == False Then
+	If WaitForControl($windowName, "", "[TEXT:License Agreement]", 30) == False Then
 	   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep2b.jpg")
 	   LogToOutput("Unable to find [TEXT:License Agreement]")
 	   Exit(1)
     EndIf
 
-	If WaitForControl($windowName, "", "[CLASS:Button; TEXT:I &accept the terms of the license agreement]", 250, 120) == False Then
+	If WaitForControl($windowName, "", "[CLASS:Button; TEXT:I &accept the terms of the license agreement]", 30) == False Then
 		_ScreenCapture_Capture($WorkingDirectory & "\InstallStep3b.jpg")
 		LogToOutput("Unable to find [CLASS:Button; TEXT:I &accept the terms of the license agreement]")
 		Exit(1)
@@ -155,7 +153,7 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	If WaitForControl($windowName, "", "[TEXT:User Details]", 250, 120) == False Then
+	If WaitForControl($windowName, "", "[TEXT:User Details]", 30) == False Then
 	   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep4b.jpg")
 	   LogToOutput("Unable to find [TEXT:User Details]")
 	   Exit(1)
@@ -175,25 +173,25 @@ Func RunInstall($windowName)
 
 	;We checking if there is an error connecting to the database server
 	sleep(250)
-	$errorControl = WaitForControl($errorDialogWindows, "", 65535, 250, 120)
+	$errorControl = WaitForControl($errorDialogWindows, "", 65535, 30) ; note that 65535 is the control Id
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep6b1.jpg")
 	If $errorControl == True Then
 	     Local $errorMessage = ControlGetText($errorDialogWindows, "", "[CLASS:Static; INSTANCE:2]")
 		 LogToOutput($errorMessage)
 		 ControlClick($errorDialogWindows, "",  "[CLASS:Button; TEXT:OK]")
 
-		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Cancel]", 250, 120)
+		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Cancel]", 30)
 		 ControlClick($windowName, "", "[CLASS:Button; TEXT:Cancel]")
 
-		 WaitForControl($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]", 250, 120)
+		 WaitForControl($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]", 30)
 		 ControlClick($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]")
 
-		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Finish]", 250, 120)
+		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Finish]", 30)
 		 ControlClick($windowName, "", "[CLASS:Button; TEXT:Finish]")
 		 Exit(1)
 	 EndIf
 
-	If WaitForControl($windowName, "", "[TEXT:Database Selection]", 250, 120) == False Then
+	If WaitForControl($windowName, "", "[TEXT:Database Selection]", 30) == False Then
 	   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep6b2.jpg")
 	   LogToOutput("Unable to find [TEXT:Database Selection]")
 	   Exit(1)
@@ -203,7 +201,7 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next]") ;note " >" is missing from button text
 
-	If WaitForControl($windowName, "", "[TEXT:Installation name]", 250, 120) == False Then
+	If WaitForControl($windowName, "", "[TEXT:Installation name]", 30) == False Then
 	   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep7b.jpg")
 	   LogToOutput("Unable to find [TEXT:Installation name]")
 	   Exit(1)
@@ -219,12 +217,12 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	WaitForControl($windowName, "", "[TEXT:Choose Destination Location]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:Choose Destination Location]", 30)
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep10.jpg")
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	WaitForControl($windowName, "", "[TEXT:Database Server Login]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:Database Server Login]", 30)
 	;Text in fields is auto populated, so set the values after it is auto populated
 	Sleep(500)
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep11.jpg")
@@ -240,25 +238,25 @@ Func RunInstall($windowName)
 
 	;We checking if there is an error connecting to the database server
 	sleep(250)
-	$errorControl = WaitForControl($errorDialogWindows, "", 65535, 250, 120)
+	$errorControl = WaitForControl($errorDialogWindows, "", 65535, 30) ; note that 65535 is the control Id
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep13.jpg")
 	If $errorControl == True Then
 	     Local $errorMessage = ControlGetText($errorDialogWindows, "", "[CLASS:Static; INSTANCE:2]")
 		 LogToOutput($errorMessage)
 		 ControlClick($errorDialogWindows, "",  "[CLASS:Button; TEXT:OK]")
 
-		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Cancel]", 250, 120)
+		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Cancel]", 30)
 		 ControlClick($windowName, "", "[CLASS:Button; TEXT:Cancel]")
 
-		 WaitForControl($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]", 250, 120)
+		 WaitForControl($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]", 30)
 		 ControlClick($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]")
 
-		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Finish]", 250, 120)
+		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Finish]", 30)
 		 ControlClick($windowName, "", "[CLASS:Button; TEXT:Finish]")
 		 Exit(1)
 	 EndIf
 
-   WaitForControl($windowName, "", "[TEXT:Select Setup type]", 250, 120)
+   WaitForControl($windowName, "", "[TEXT:Select Setup type]", 30)
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep14.jpg")
 
 	ControlClick($windowName, "", 602)
@@ -267,13 +265,13 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	WaitForControl($windowName, "", "[TEXT:Select install add ons]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:Select install add ons]", 30)
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep16.jpg")
 	LogToOutput("Click next from 'Select install add ons'")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	WaitForControl($windowName, "", "[TEXT:Default Currency]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:Default Currency]", 30)
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep17.jpg")
 
     Sleep(500) ; Population of dropdown data
@@ -286,7 +284,7 @@ Func RunInstall($windowName)
 
 
     _ScreenCapture_Capture($WorkingDirectory & "\InstallStep18b.jpg") ;This guy needs to be between WinWaitActive and WaitForControl. Tried random sleep and it didn't help
-	WaitForControl($windowName, "", "[TEXT:CTI information]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:CTI information]", 30)
 
 	Sleep(250) ; Population of dropdown data
 	ControlCommand($windowName, "", "[CLASS:ComboBox; INSTANCE:1]", "SelectString", $Country)
@@ -300,7 +298,7 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next]") ;note missing " >"
 
-	WaitForControl($windowName, "", "[TEXT:HTTP Protocol and Proxy settings]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:HTTP Protocol and Proxy settings]", 30)
 	if $UseHttps == True Then
 		ControlCommand($windowName, "", 1203, "Check", "")
 	Else
@@ -324,14 +322,14 @@ Func RunInstall($windowName)
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next]") ;note missing " >"
 
     ;CRM 2017 has this extra step so its optional
-	$AnalyticsLicenseAgreementControl = WaitForControl($windowName, "", "[TEXT:Analytics License Agreement]", 250, 2)
+	$AnalyticsLicenseAgreementControl = WaitForControl($windowName, "", "[TEXT:Analytics License Agreement]", 0.5)
 	if $AnalyticsLicenseAgreementControl == True Then
 	  _ScreenCapture_Capture($WorkingDirectory & "\InstallStep21.jpg")
 	  LogToOutput("Click next")
 	  ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 	EndIf
 
-	WaitForControl($windowName, "", "[TEXT:Start Copying Files]", 250, 120)
+	WaitForControl($windowName, "", "[TEXT:Start Copying Files]", 30)
 	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep22.jpg")
     LogToOutput("Click next from 'Start Copying Files'")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
@@ -407,7 +405,7 @@ Func RunInstall($windowName)
 			;EndIf
 
 			;CRM 7.2a.1 has this extra step so its optional
-			$registrationControl = WaitForControl($windowName, "", "[TEXT:Registration]", 250, 2)
+			$registrationControl = WaitForControl($windowName, "", "[TEXT:Registration]", 0.5)
 			LogToOutput("Checked for $registrationControl - [TEXT:Registration]")
 			if $registrationControl == True Then
 			   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep28b1.jpg")
@@ -441,7 +439,7 @@ Func RunInstall($windowName)
 			   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep28c1.jpg")
 
 			   ;Optional checkbox only for SageCrm 2017
-			   $openSageCrmHelpCenterCheckbox = WaitForControl($windowName, "", "[CLASS:Button; TEXT:&Open Sage CRM help center.]", 250, 4)
+			   $openSageCrmHelpCenterCheckbox = WaitForControl($windowName, "", "[CLASS:Button; TEXT:&Open Sage CRM help center.]", 1)
 			   If ($openSageCrmHelpCenterCheckbox) == True Then
 				  LogToOutput("Open Sage Crm help center checkbox - " & $openSageCrmHelpCenterCheckbox )
 				  _ScreenCapture_Capture($WorkingDirectory & "\InstallStep28c2.jpg")
@@ -451,7 +449,7 @@ Func RunInstall($windowName)
 			   EndIf
 
 			   ;Optional checkbox only for SageCrm 7.2a.1
-			   $viewTheReadmeFileCheckbox = WaitForControl($windowName, "", "[CLASS:Button; TEXT:&View the Readme file.]", 250, 4)
+			   $viewTheReadmeFileCheckbox = WaitForControl($windowName, "", "[CLASS:Button; TEXT:&View the Readme file.]", 1)
 			   If $viewTheReadmeFileCheckbox == True Then
 				  LogToOutput("View the Readme file checkbox - " & $openSageCrmHelpCenterCheckbox )
 				  _ScreenCapture_Capture($WorkingDirectory & "\InstallStep28c3.jpg")
@@ -460,7 +458,7 @@ Func RunInstall($windowName)
 				  ControlCommand($windowName, "", "[CLASS:Button; TEXT:&View the Readme file.]", "UnCheck", "")
 			   EndIf
 
-			   $launchSageCrmNowCheckbox = WaitForControl($windowName, "", "[CLASS:Button; TEXT:&Launch Sage CRM now.]", 250, 4)
+			   $launchSageCrmNowCheckbox = WaitForControl($windowName, "", "[CLASS:Button; TEXT:&Launch Sage CRM now.]", 1)
 			   If $launchSageCrmNowCheckbox == True Then
 				  LogToOutput("Launch Sage Crm now checkbox - " & $launchSageCrmNowCheckbox)
 				  _ScreenCapture_Capture($WorkingDirectory & "\InstallStep28d1.jpg")
