@@ -362,7 +362,6 @@ Func RunInstall($windowName)
 			   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep25a2.jpg")
 			EndIf
 
-			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep26.progress" & stringformat("%04d", $counter) & ".jpg")
 			$urlRewriterHeadache = ControlGetHandle($errorDialogWindows, "", 2)
 			if $urlRewriterHeadache Then
 			   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep26b1.jpg")
