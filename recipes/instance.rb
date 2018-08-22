@@ -93,7 +93,7 @@ execute "Check syntax #{win_friendly_sagecrm_install_script_path} with AutoIt" d
 end
 
 execute "Compile #{win_friendly_sagecrm_install_script_path} with AutoIt" do
-  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\" "
+  command "\"#{File.join(node['autoit']['home'], '/Aut2Exe/Aut2exe.exe')}\" /in \"#{win_friendly_sagecrm_install_script_path}\" /out \"#{win_friendly_sagecrm_install_exe_path}\" /console"
   not_if {sagecrm_installed}
 end
 
@@ -114,6 +114,7 @@ win_friendly_powershell_helper_path = win_friendly_path(File.join(node['autoit']
 
 powershell_script 'Install-SageCrm' do
     code <<-EOH1
+$VerbosePreference = 'Continue'
 . "#{win_friendly_powershell_helper_path}"
 
 $username = '#{node['sagecrm']['installaccount']['account']}'
@@ -125,26 +126,29 @@ $rdpplusPath = '#{win_friendly_rdpplus_path}'
 $ErrorActionPreference = "Stop"  
 
 #We are unable to run the installer in a way that will allow it to start sage crm services in interactive mode. If the services exist that means the install is complete.
-$result = Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath
+$workingDirectory='#{win_friendly_installation_directory}'
+$ScreenshotsDirectory=$workingDirectory
+Write-Verbose "Screenshots from installer steps should be available in $ScreenshotsDirectory"
+Write-Verbose "Running: Invoke-InDesktopSession -username $username -password $password -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20"
+$result = Invoke-InDesktopSession -username $username -password $password -workingDirectory $workingDirectory -command $command -psexecPath $psexecPath -rdpplusPath $rdpplusPath -timeOutMinutes 20
+
+if ($result.StandardOutput){
+	Write-Verbose "StandardOutput: $($result.StandardOutput)"
+}
+
 $sageCrmServices = get-service | ?{$_.Name -eq 'SageCRMQuickFindService' -or $_.Name -eq 'CRMIntegrationService' -or $_.Name -eq 'CRMIndexerService' -or $_.Name -eq 'CRMEscalationService'}
 
 if ($sageCrmServices) {
 	$sageCrmServices | stop-service
-	if ($result.StandardOutput){
-		Write-Output $result.StandardOutput
-	}
 	if ($result.ErrorOutput){
-		Write-Output $result.ErrorOutput
-	}	
+		Write-Verbose "ErrorOutput: $($result.ErrorOutput)"
+	}
 	exit 0
 } else {
-	if ($result.StandardOutput){
-		Write-Output $result.StandardOutput
-	}
-	if ($result.ErrorOutput){
-		Write-Error $result.ErrorOutput
-	}	
-	exit $result.ExitCode
+	throw [PsCustomObject]@{
+			Message = "Sage services not found, so concluding that running of the installer didn't install Sage correctly. Screenshots from installer steps should be available in $ScreenshotsDirectory."
+			CommandInvokeResult = $result | ConvertTo-Json <# Need to serialize here because only 1st level of object gets serialized to output #>
+		}
 }
 
 EOH1
