@@ -186,31 +186,27 @@ Func RunInstall($windowName)
 	LogToOutput("Click next")
 	ControlClick($windowName, "", "[CLASS:Button; TEXT:&Next >]")
 
-	;We checking if there is an error connecting to the database server
-	sleep(250)
-	$errorControl = WaitForControl($errorDialogWindows, "", 65535, 30) ; note that 65535 is the control Id
-	_ScreenCapture_Capture($WorkingDirectory & "\InstallStep6b1.jpg")
-	If $errorControl == True Then
-	     Local $errorMessage = ControlGetText($errorDialogWindows, "", "[CLASS:Static; INSTANCE:2]")
-		 LogToOutput($errorMessage)
-		 ControlClick($errorDialogWindows, "",  "[CLASS:Button; TEXT:OK]")
-
-		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Cancel]", 30)
-		 ControlClick($windowName, "", "[CLASS:Button; TEXT:Cancel]")
-
-		 WaitForControl($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]", 30)
-		 ControlClick($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]")
-
-		 WaitForControl($windowName, "", "[CLASS:Button; TEXT:Finish]", 30)
-		 ControlClick($windowName, "", "[CLASS:Button; TEXT:Finish]")
-		 Exit(1)
-	 EndIf
-
 	If WaitForControl($windowName, "", "[TEXT:Database Selection]", 30) == False Then
-	   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep6b2.jpg")
-	   LogToOutput("Unable to find [TEXT:Database Selection]")
-	   Exit(1)
-    EndIf
+		;We checking if there is an error connecting to the database server
+		$errorControl = WaitForControl($errorDialogWindows, "", 65535, 30) ; note that 65535 is the control Id
+		_ScreenCapture_Capture($WorkingDirectory & "\InstallStep6b1.jpg")
+		If $errorControl == True Then
+			Local $errorMessage = ControlGetText($errorDialogWindows, "", "[CLASS:Static; INSTANCE:2]")
+			LogToOutput($errorMessage)
+			ControlClick($errorDialogWindows, "",  "[CLASS:Button; TEXT:OK]")
+		Else
+			LogToOutput("Unable to find [TEXT:Database Selection]")
+		EndIf
+		WaitForControl($windowName, "", "[CLASS:Button; TEXT:Cancel]", 30)
+		ControlClick($windowName, "", "[CLASS:Button; TEXT:Cancel]")
+
+		WaitForControl($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]", 30)
+		ControlClick($exitSetupWindow, "", "[CLASS:Button; TEXT:&Yes]")
+
+		WaitForControl($windowName, "", "[CLASS:Button; TEXT:Finish]", 30)
+		ControlClick($windowName, "", "[CLASS:Button; TEXT:Finish]")
+		Exit(45)
+	EndIf
 
    _ScreenCapture_Capture($WorkingDirectory & "\InstallStep7.jpg")
 	LogToOutput("Click next")
