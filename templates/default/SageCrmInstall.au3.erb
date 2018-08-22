@@ -371,9 +371,7 @@ Func RunInstall($windowName)
 
 			   _ScreenCapture_Capture($WorkingDirectory & "\InstallStep26b2.jpg")
 			EndIf
-		EndIf
-
-		 If WinExists($otherErrorDialogWindows) Then
+		ElseIf WinExists($otherErrorDialogWindows) Then
 			LogToOutput("Other Error Dialog exists - " & $otherErrorDialogWindows)
 			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep27.progress" & stringformat("%04d", $counter) & ".jpg")
 
@@ -385,9 +383,8 @@ Func RunInstall($windowName)
 
 				_ScreenCapture_Capture($WorkingDirectory & "\InstallStep27c2.jpg")
 		 	EndIf
-		 EndIf
 
-		 If WinExists($windowName) Then
+		ElseIf WinExists($windowName) Then
 			LogToOutput("Window exists - " & $windowName)
 			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep28.progress" & stringformat("%04d", $counter) & ".jpg")
 
@@ -472,6 +469,8 @@ Func RunInstall($windowName)
 				  $waiting = False
 			   EndIf
 			EndIf
+		Else
+			_ScreenCapture_Capture($WorkingDirectory & "\InstallStep29.progress" & stringformat("%04d", $counter) & ".jpg")
 		 EndIf
 
 		 $counter = $counter + 1
