@@ -18,12 +18,6 @@ include_recipe 'iis'
   end
 end
 
-log 'Restart IIS for Sage CRM' do
-  level :info
-  action :nothing
-  notifies :restart, 'service[iis]'
-end
-
 log 'Stop Sage CRM IIS dependancies' do
   level :info
   subscribes :write, 'service[iis]', :before
@@ -124,20 +118,26 @@ end
 
 iis_config "/section:system.webServer/asp /enableParentPaths:\"True\" /commit:apphost" do
   action :set
-  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
 iis_config "/section:system.webServer/asp /scriptErrorSentToBrowser:\"True\" /commit:apphost" do
   action :set
-  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
 iis_config "/section:anonymousAuthentication /username:\"\" --password" do
   action :set
-  notifies :write, 'log[Restart IIS for Sage CRM]'
 end
 
 iis_config "/section:handlers /accessPolicy:Read,Script,Execute" do
   action :set
-  notifies :write, 'log[Restart IIS for Sage CRM]'
+end
+
+service 'iis' do
+	action :stop
+	notifies :stop, 'service[CRMTomcat7]', :before
+end
+
+service 'iis' do
+	action :start
+	notifies :start, 'service[CRMTomcat7]'
 end
